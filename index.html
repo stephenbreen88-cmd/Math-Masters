@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Math Masters</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Are You a Math Master?</title>
 
 <style>
 * {
@@ -11,100 +11,259 @@
 }
 
 body {
-  font-family: Arial, sans-serif;
-  background: #dff3ff;
-  text-align: center;
   margin: 0;
-  padding: 20px;
-  color: #173653;
+  padding: 25px;
+  min-height: 100vh;
+  background: #DFF3FF;
+  font-family: Arial, sans-serif;
+  color: #243B53;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.card {
-  background: white;
-  max-width: 650px;
-  margin: 30px auto;
-  padding: 30px;
-  border-radius: 20px;
-  box-shadow: 0 5px 20px #9bb8c8;
+.container {
+  background: #FFF9E6;
+  width: 100%;
+  max-width: 750px;
+  min-height: 620px;
+  padding: 45px 35px;
+  border-radius: 22px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+  text-align: center;
 }
 
 h1 {
-  color: #1769aa;
-  font-size: 42px;
+  font-size: 38px;
+  color: #205493;
+  margin-bottom: 35px;
 }
 
 h2 {
-  color: #1769aa;
+  font-size: 28px;
+  margin-bottom: 25px;
+}
+
+h3 {
+  font-size: 22px;
+}
+
+p {
+  font-size: 19px;
+  line-height: 1.5;
 }
 
 button {
-  background: #2379c5;
+  background: #3478C0;
   color: white;
-  border: 0;
+  border: none;
   border-radius: 12px;
   padding: 16px 24px;
   margin: 8px;
   font-size: 20px;
+  font-weight: bold;
   cursor: pointer;
 }
 
 button:hover {
-  background: #15558e;
+  background: #205493;
+}
+
+button.selected {
+  background: #176B43;
+  outline: 4px solid #A7E3BE;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 input {
-  padding: 15px;
   font-size: 22px;
-  border: 2px solid #8bb9dd;
+  padding: 14px;
+  border: 2px solid #A5B8C8;
   border-radius: 10px;
-  max-width: 100%;
-  width: 300px;
+  width: 100%;
+  max-width: 320px;
+  text-align: center;
 }
 
-.hidden {
+.name-section {
+  margin-top: 40px;
+}
+
+.name-section label {
+  display: block;
+  font-size: 21px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.continue-button {
+  display: block;
+  margin: 30px auto 0;
+  min-width: 180px;
+}
+
+.mode-buttons {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.fact-buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  max-width: 540px;
+  margin: 25px auto;
+}
+
+.fact-buttons button {
+  margin: 0;
+}
+
+.screen {
   display: none;
 }
 
-.stop {
-  background: #b83b3b;
+.screen.active {
+  display: block;
 }
 
-.fact {
-  min-width: 65px;
-}
-
-#question {
-  font-size: 48px;
-  margin: 25px;
-}
-
-#timer {
-  font-size: 26px;
+.game-info {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 21px;
   font-weight: bold;
+  margin: 25px 0;
 }
 
-#certificate {
-  border: 8px double #d4a62d;
-  padding: 25px;
-  margin-top: 20px;
-  background: #fffdf0;
+.question {
+  font-size: 48px;
+  font-weight: bold;
+  margin: 35px 0 25px;
+}
+
+#answer {
+  max-width: 200px;
+  font-size: 30px;
+}
+
+.stop-button {
+  background: #B84040;
+  margin-top: 35px;
+}
+
+.stop-button:hover {
+  background: #8D2525;
+}
+
+.results-score {
+  font-size: 30px;
+  font-weight: bold;
+  color: #205493;
+}
+
+.review {
+  text-align: left;
+  max-width: 500px;
+  margin: 25px auto;
+}
+
+.review li {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.certificate {
+  display: none;
+  border: 8px double #3478C0;
+  padding: 35px 20px;
+  margin: 30px auto;
+  background: white;
+  max-width: 600px;
+}
+
+.certificate h2 {
+  color: #205493;
+  font-size: 32px;
+}
+
+.certificate-name {
+  font-size: 34px;
+  font-weight: bold;
+  margin: 25px 0;
+}
+
+.error {
+  color: #B3261E;
+  font-weight: bold;
+  min-height: 24px;
+}
+
+@media (max-width: 600px) {
+  body {
+    padding: 12px;
+  }
+
+  .container {
+    padding: 30px 15px;
+    min-height: 580px;
+  }
+
+  h1 {
+    font-size: 30px;
+  }
+
+  h2 {
+    font-size: 24px;
+  }
+
+  button {
+    font-size: 17px;
+    padding: 14px 15px;
+  }
+
+  .fact-buttons {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .question {
+    font-size: 40px;
+  }
 }
 
 @media print {
   body {
     background: white;
+    display: block;
+    padding: 0;
   }
 
-  .card {
+  .container {
     box-shadow: none;
+    background: white;
+    max-width: none;
+    min-height: 0;
   }
 
-  button, .noPrint {
+  .screen,
+  #results > * {
     display: none !important;
+  }
+
+  #results {
+    display: block !important;
   }
 
   #certificate {
     display: block !important;
+    margin: 20px auto;
   }
 }
 </style>
@@ -112,514 +271,623 @@ input {
 
 <body>
 
-<div class="card">
+<div class="container">
 
-<h1>🏆 Math Masters 🏆</h1>
+  <!-- FIRST PAGE -->
+  <section id="home" class="screen active">
 
-<section id="setup1">
-  <h2>Welcome!</h2>
-  <p>Enter your first name.</p>
+    <h1>Are You a Math Master?</h1>
 
-  <input id="studentName"
-         placeholder="First name"
-         maxlength="30">
+    <h2>Select a Game Mode</h2>
 
-  <h2>Choose Your Challenge</h2>
+    <div class="mode-buttons">
+      <button type="button" data-mode="multiplication"
+        onclick="selectMode('multiplication')">
+        Multiplication ×
+      </button>
 
-  <button onclick="chooseMode('multiply')">
-    Multiplication
-  </button>
+      <button type="button" data-mode="division"
+        onclick="selectMode('division')">
+        Division ÷
+      </button>
 
-  <button onclick="chooseMode('divide')">
-    Division
-  </button>
+      <button type="button" data-mode="both"
+        onclick="selectMode('both')">
+        Both × ÷
+      </button>
+    </div>
 
-  <button onclick="chooseMode('both')">
-    Both
-  </button>
-</section>
+    <div class="name-section">
+      <label for="studentName">Enter Your Name</label>
 
-<section id="setup2" class="hidden">
+      <input
+        type="text"
+        id="studentName"
+        placeholder="First name"
+        maxlength="30"
+        autocomplete="given-name"
+      >
+    </div>
 
-  <h2>Choose Your Math Facts</h2>
+    <button class="continue-button" onclick="continueToFacts()">
+      Continue
+    </button>
 
-  <p id="modeLabel"></p>
+    <p id="homeError" class="error"></p>
 
-  <div id="factButtons"></div>
+  </section>
 
-  <button onclick="chooseFact('mixed')">
-    Mixed Facts (1–12)
-  </button>
 
-  <br>
+  <!-- SECOND PAGE -->
+  <section id="factSelection" class="screen">
 
-  <button onclick="showPage('setup1')">
-    Back
-  </button>
+    <h1>Choose Your Facts</h1>
 
-</section>
+    <p id="welcomeMessage"></p>
 
-<section id="game" class="hidden">
+    <h2>Select a Fact Family</h2>
 
-  <h2 id="gameTitle"></h2>
+    <div id="factButtons" class="fact-buttons"></div>
 
-  <p id="timer">Time: 1:00</p>
+    <button onclick="selectFacts('mixed')">
+      Mixed Facts (1–12)
+    </button>
 
-  <p id="progress"></p>
+    <p>
+      <strong>Individual Fact Family:</strong>
+      20 questions in 1 minute.
+    </p>
 
-  <div id="question"></div>
+    <p>
+      <strong>Mixed Facts:</strong>
+      100 questions in 5 minutes.
+    </p>
 
-  <input id="answer"
-         type="number"
-         inputmode="numeric"
-         autocomplete="off"
-         placeholder="Your answer">
+    <button onclick="showScreen('home')">
+      Back
+    </button>
 
-  <br>
+  </section>
 
-  <button onclick="submitAnswer()">
-    Submit
-  </button>
 
-  <button class="stop" onclick="stopGame()">
-    Stop Game
-  </button>
+  <!-- GAME PAGE -->
+  <section id="game" class="screen">
 
-</section>
+    <h1>Math Masters</h1>
 
-<section id="results" class="hidden">
+    <h2 id="gameTitle"></h2>
 
-  <h2>Challenge Results</h2>
+    <div class="game-info">
+      <span id="progress">Question 1 of 20</span>
+      <span id="timer">Time: 1:00</span>
+    </div>
 
-  <div id="resultDetails"></div>
+    <div id="question" class="question"></div>
 
-  <h2 id="message"></h2>
+    <form id="answerForm">
+      <input
+        type="number"
+        id="answer"
+        placeholder="Answer"
+        autocomplete="off"
+        required
+      >
 
-  <div id="review"></div>
+      <br><br>
 
-  <div id="certificate" class="hidden">
+      <button type="submit">Submit</button>
+    </form>
 
-    <h1>🏆 Math Masters 🏆</h1>
+    <br>
 
-    <h2>Certificate of Achievement</h2>
+    <button class="stop-button" onclick="stopGame()">
+      Stop Game
+    </button>
 
-    <p>This certificate is proudly awarded to</p>
+  </section>
 
-    <h1 id="certName"></h1>
 
-    <p>For achieving Math Masters status!</p>
+  <!-- RESULTS PAGE -->
+  <section id="results" class="screen">
 
-    <h2 id="certScore"></h2>
+    <h1>Math Masters Results</h1>
 
-    <p id="certTime"></p>
+    <h2 id="resultName"></h2>
 
-  </div>
+    <p id="resultScore" class="results-score"></p>
 
-  <br>
+    <p id="resultPercent"></p>
 
-  <button id="printButton"
-          class="hidden"
-          onclick="window.print()">
-    Print Certificate
-  </button>
+    <p id="resultTime"></p>
 
-  <button onclick="restart()">
-    Play Again
-  </button>
+    <h2 id="resultMessage"></h2>
 
-</section>
+    <div id="reviewSection" class="review"></div>
+
+    <div id="certificate" class="certificate">
+
+      <h2>Certificate of Achievement</h2>
+
+      <p>This certificate is proudly presented to</p>
+
+      <div id="certificateName" class="certificate-name"></div>
+
+      <p>For demonstrating outstanding math fact mastery!</p>
+
+      <p id="certificateDetails"></p>
+
+      <p>Congratulations, Math Master!</p>
+
+    </div>
+
+    <div id="printArea" style="display:none;">
+      <button onclick="window.print()">
+        Print Certificate
+      </button>
+    </div>
+
+    <br>
+
+    <button onclick="playAgain()">
+      Play Again
+    </button>
+
+    <button onclick="startOver()">
+      Main Menu
+    </button>
+
+  </section>
 
 </div>
 
+
 <script>
 
-let name = "";
-let mode = "";
-let fact = "";
-
+let studentName = "";
+let gameMode = "";
+let selectedFamily = "";
 let questions = [];
-let index = 0;
-let correct = 0;
+let currentQuestion = 0;
+let correctAnswers = 0;
+let incorrectAnswers = [];
+let timeLimit = 60;
+let timeRemaining = 60;
+let timerInterval = null;
+let gameStartTime = null;
+let gameFinished = false;
 
-let mistakes = [];
 
-let seconds = 0;
-let remaining = 0;
-
-let timerId = null;
-let finished = false;
-
-function showPage(id) {
-
-  document.querySelectorAll("section").forEach(s => {
-    s.classList.add("hidden");
+function showScreen(screenId) {
+  document.querySelectorAll(".screen").forEach(screen => {
+    screen.classList.remove("active");
   });
 
-  document.getElementById(id).classList.remove("hidden");
-
+  document.getElementById(screenId).classList.add("active");
 }
 
-function chooseMode(m) {
 
-  name = document.getElementById("studentName").value.trim();
+function selectMode(mode) {
+  gameMode = mode;
 
-  if (!name) {
-    alert("Please enter your first name.");
+  document.querySelectorAll("[data-mode]").forEach(button => {
+    button.classList.toggle(
+      "selected",
+      button.dataset.mode === mode
+    );
+  });
+
+  document.getElementById("homeError").textContent = "";
+}
+
+
+function continueToFacts() {
+  const nameInput = document.getElementById("studentName");
+
+  studentName = nameInput.value.trim();
+
+  if (!gameMode) {
+    document.getElementById("homeError").textContent =
+      "Please select a game mode.";
     return;
   }
 
-  mode = m;
+  if (!studentName) {
+    document.getElementById("homeError").textContent =
+      "Please enter your first name.";
+    nameInput.focus();
+    return;
+  }
 
-  document.getElementById("modeLabel").textContent =
-    m === "multiply" ? "Multiplication" :
-    m === "divide" ? "Division" :
-    "Multiplication and Division";
+  document.getElementById("homeError").textContent = "";
 
-  let box = document.getElementById("factButtons");
+  document.getElementById("welcomeMessage").textContent =
+    "Let's go, " + studentName + "!";
 
-  box.innerHTML = "";
+  createFactButtons();
+
+  showScreen("factSelection");
+}
+
+
+function createFactButtons() {
+  const container = document.getElementById("factButtons");
+
+  container.innerHTML = "";
 
   for (let i = 1; i <= 12; i++) {
+    const button = document.createElement("button");
 
-    let b = document.createElement("button");
+    button.textContent = i + " Facts";
 
-    b.className = "fact";
-    b.textContent = i;
-
-    b.onclick = () => chooseFact(i);
-
-    box.appendChild(b);
-
-  }
-
-  showPage("setup2");
-
-}
-
-function random(min, max) {
-
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-
-}
-
-function makeQuestion() {
-
-  let operation = mode === "both"
-    ? (random(0, 1) === 0 ? "multiply" : "divide")
-    : mode;
-
-  let a, b;
-
-  if (fact === "mixed") {
-
-    a = random(2, 12);
-    b = random(2, 12);
-
-    // Include some zero and one facts,
-    // but not too many.
-
-    if (random(1, 12) === 1) {
-      a = random(0, 1);
-    }
-
-    if (random(1, 12) === 1) {
-      b = random(0, 1);
-    }
-
-  } else {
-
-    a = Number(fact);
-    b = random(0, 12);
-
-  }
-
-  if (operation === "multiply") {
-
-    return {
-      text: `${a} × ${b} = ?`,
-      answer: a * b
+    button.onclick = function() {
+      selectFacts(i);
     };
 
+    container.appendChild(button);
+  }
+}
+
+
+function selectFacts(family) {
+  selectedFamily = family;
+
+  if (family === "mixed") {
+    timeLimit = 300;
+    generateQuestions(100);
+  } else {
+    timeLimit = 60;
+    generateQuestions(20);
   }
 
-  // Division cannot use zero as a divisor.
-  if (a === 0) {
-    a = 1;
+  startGame();
+}
+
+
+function randomNumber(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+
+function chooseOperation() {
+  if (gameMode === "multiplication") {
+    return "multiplication";
+  }
+
+  if (gameMode === "division") {
+    return "division";
+  }
+
+  return Math.random() < 0.5
+    ? "multiplication"
+    : "division";
+}
+
+
+function chooseFactor() {
+  // Zero and one appear occasionally,
+  // but most questions use facts from 2 to 12.
+
+  const chance = Math.random();
+
+  if (chance < 0.04) return 0;
+  if (chance < 0.10) return 1;
+
+  return randomNumber(2, 12);
+}
+
+
+function makeQuestion() {
+  const operation = chooseOperation();
+
+  let a;
+  let b;
+  let questionText;
+  let answer;
+
+  if (selectedFamily === "mixed") {
+    a = chooseFactor();
+    b = chooseFactor();
+  } else {
+    a = Number(selectedFamily);
+    b = chooseFactor();
+  }
+
+  if (operation === "multiplication") {
+    if (Math.random() < 0.5) {
+      [a, b] = [b, a];
+    }
+
+    questionText = a + " × " + b + " = ?";
+    answer = a * b;
+
+  } else {
+    // Division always uses a nonzero divisor.
+    // The answer is a whole number.
+
+    if (selectedFamily === "mixed") {
+      if (b === 0) b = randomNumber(2, 12);
+    } else {
+      // The selected family is the divisor.
+      b = Number(selectedFamily);
+      a = chooseFactor();
+    }
+
+    const dividend = a * b;
+
+    questionText = dividend + " ÷ " + b + " = ?";
+    answer = a;
   }
 
   return {
-    text: `${a * b} ÷ ${a} = ?`,
-    answer: b
+    text: questionText,
+    answer: answer
   };
-
 }
 
-function startGame() {
 
+function generateQuestions(total) {
   questions = [];
-  index = 0;
-  correct = 0;
-  mistakes = [];
-  finished = false;
-
-  let total = fact === "mixed" ? 100 : 20;
-
-  seconds = fact === "mixed" ? 300 : 60;
-
-  remaining = seconds;
 
   for (let i = 0; i < total; i++) {
     questions.push(makeQuestion());
   }
+}
 
-  document.getElementById("gameTitle").textContent =
-    `${name}'s Math Challenge`;
 
-  showPage("game");
+function startGame() {
+  clearInterval(timerInterval);
 
+  currentQuestion = 0;
+  correctAnswers = 0;
+  incorrectAnswers = [];
+  timeRemaining = timeLimit;
+  gameFinished = false;
+  gameStartTime = Date.now();
+
+  let title = "";
+
+  if (gameMode === "multiplication") {
+    title = "Multiplication";
+  } else if (gameMode === "division") {
+    title = "Division";
+  } else {
+    title = "Multiplication & Division";
+  }
+
+  if (selectedFamily === "mixed") {
+    title += " — Mixed Facts";
+  } else {
+    title += " — " + selectedFamily + " Facts";
+  }
+
+  document.getElementById("gameTitle").textContent = title;
+
+  showScreen("game");
   showQuestion();
-
   updateTimer();
 
-  clearInterval(timerId);
-
-  timerId = setInterval(() => {
-
-    remaining--;
+  timerInterval = setInterval(function() {
+    timeRemaining--;
 
     updateTimer();
 
-    if (remaining <= 0) {
-      finishGame(false);
+    if (timeRemaining <= 0) {
+      finishGame("time");
     }
-
   }, 1000);
-
 }
 
-function chooseFact(f) {
-
-  fact = f;
-
-  startGame();
-
-}
-
-function updateTimer() {
-
-  let minutes = Math.floor(remaining / 60);
-
-  let secs = remaining % 60;
-
-  document.getElementById("timer").textContent =
-    `Time: ${minutes}:${String(secs).padStart(2, "0")}`;
-
-}
 
 function showQuestion() {
-
-  if (index >= questions.length) {
-    finishGame(false);
+  if (currentQuestion >= questions.length) {
+    finishGame("complete");
     return;
   }
 
   document.getElementById("progress").textContent =
-    `Question ${index + 1} of ${questions.length}`;
+    "Question " + (currentQuestion + 1) +
+    " of " + questions.length;
 
   document.getElementById("question").textContent =
-    questions[index].text;
+    questions[currentQuestion].text;
 
-  let input = document.getElementById("answer");
+  const answerInput = document.getElementById("answer");
 
-  input.value = "";
-
-  input.focus();
-
+  answerInput.value = "";
+  answerInput.focus();
 }
 
-function submitAnswer() {
 
-  if (finished) return;
+function updateTimer() {
+  const minutes = Math.floor(timeRemaining / 60);
+  const seconds = timeRemaining % 60;
 
-  let input = document.getElementById("answer");
-
-  if (input.value.trim() === "") return;
-
-  let response = Number(input.value);
-
-  let q = questions[index];
-
-  if (response === q.answer) {
-
-    correct++;
-
-  } else {
-
-    mistakes.push({
-      question: q.text,
-      student: response,
-      answer: q.answer
-    });
-
-  }
-
-  index++;
-
-  if (index >= questions.length) {
-
-    finishGame(false);
-
-  } else {
-
-    showQuestion();
-
-  }
-
+  document.getElementById("timer").textContent =
+    "Time: " + minutes + ":" +
+    String(seconds).padStart(2, "0");
 }
 
-document.getElementById("answer").addEventListener(
-  "keydown",
-  e => {
 
-    if (e.key === "Enter") {
-      submitAnswer();
+document.getElementById("answerForm").addEventListener(
+  "submit",
+  function(event) {
+    event.preventDefault();
+
+    if (gameFinished) return;
+
+    const input = document.getElementById("answer");
+
+    if (input.value.trim() === "") return;
+
+    const studentAnswer = Number(input.value);
+    const current = questions[currentQuestion];
+
+    if (studentAnswer === current.answer) {
+      correctAnswers++;
+    } else {
+      incorrectAnswers.push({
+        question: current.text,
+        studentAnswer: studentAnswer,
+        correctAnswer: current.answer
+      });
     }
 
+    currentQuestion++;
+
+    if (currentQuestion >= questions.length) {
+      finishGame("complete");
+    } else {
+      showQuestion();
+    }
   }
 );
 
+
 function stopGame() {
-
-  if (confirm("Are you sure you want to stop?")) {
-    finishGame(true);
-  }
-
+  finishGame("stopped");
 }
 
-function finishGame(stopped) {
 
-  if (finished) return;
+function finishGame(reason) {
+  if (gameFinished) return;
 
-  finished = true;
+  gameFinished = true;
 
-  clearInterval(timerId);
+  clearInterval(timerInterval);
 
-  let total = questions.length;
+  const elapsedSeconds = Math.min(
+    timeLimit,
+    Math.floor((Date.now() - gameStartTime) / 1000)
+  );
 
-  let percent = Math.round(correct / total * 100);
+  const totalQuestions = questions.length;
 
-  let elapsed = seconds - remaining;
+  const percentage = Math.round(
+    (correctAnswers / totalQuestions) * 100
+  );
 
-  let minutes = Math.floor(elapsed / 60);
+  document.getElementById("resultName").textContent =
+    studentName + "'s Results";
 
-  let secs = elapsed % 60;
+  document.getElementById("resultScore").textContent =
+    correctAnswers + " out of " + totalQuestions + " correct";
 
-  let timeText =
-    `${minutes} minute(s) and ${secs} second(s)`;
+  document.getElementById("resultPercent").textContent =
+    "Score: " + percentage + "%";
 
-  showPage("results");
+  const minutes = Math.floor(elapsedSeconds / 60);
+  const seconds = elapsedSeconds % 60;
 
-  const details = document.getElementById("resultDetails");
+  document.getElementById("resultTime").textContent =
+    "Time: " + minutes + " minute(s), " +
+    seconds + " second(s)";
 
-  details.replaceChildren();
+  const message = document.getElementById("resultMessage");
 
-  [
-    `Student: ${name}`,
-    `Score: ${correct} out of ${total}`,
-    `Percentage: ${percent}%`,
-    `Time: ${timeText}`,
-    ...(stopped ? ["Game stopped early."] : [])
-  ].forEach(line => {
+  const certificate = document.getElementById("certificate");
+  const printArea = document.getElementById("printArea");
 
-    let p = document.createElement("p");
-    p.textContent = line;
-    details.appendChild(p);
+  certificate.style.display = "none";
+  printArea.style.display = "none";
 
-  });
+  if (reason === "stopped") {
+    message.textContent = "Game stopped. Keep practicing!";
 
-  let message = "";
+  } else if (reason === "time") {
+    message.textContent = "Time's up! Keep practicing!";
 
-  let earned =
-    !stopped &&
-    index === total &&
-    percent >= 95;
+  } else if (percentage >= 95) {
+    message.textContent =
+      "Congratulations! You're a Math Master!";
 
-  if (earned) {
+    certificate.style.display = "block";
+    printArea.style.display = "block";
 
-    message = "Congratulations! You're a Math Master!";
+    document.getElementById("certificateName").textContent =
+      studentName;
 
-  } else if (percent >= 80) {
+    document.getElementById("certificateDetails").textContent =
+      "Score: " + percentage + "% — " +
+      correctAnswers + " out of " + totalQuestions +
+      " questions correct";
 
-    message = "Great job! Keep up the good work!";
+  } else if (percentage >= 80) {
+    message.textContent =
+      "Great job! Keep up the good work!";
 
   } else {
-
-    message = "Practice makes progress! Keep trying!";
-
+    message.textContent =
+      "Practice makes progress! Keep trying!";
   }
 
-  document.getElementById("message").textContent = message;
+  const review = document.getElementById("reviewSection");
 
-  let review = document.getElementById("review");
+  review.innerHTML = "";
 
-  review.replaceChildren();
+  const reviewHeading = document.createElement("h3");
+  reviewHeading.textContent = "Incorrect Answers";
+  review.appendChild(reviewHeading);
 
-  let heading = document.createElement("h3");
-  heading.textContent = "Incorrect Answers";
-  review.appendChild(heading);
-
-  if (mistakes.length === 0) {
-
-    let p = document.createElement("p");
-    p.textContent = "No incorrect answers!";
-    review.appendChild(p);
+  if (incorrectAnswers.length === 0) {
+    const paragraph = document.createElement("p");
+    paragraph.textContent = "No incorrect answers!";
+    review.appendChild(paragraph);
 
   } else {
+    const list = document.createElement("ol");
 
-    mistakes.forEach(m => {
+    incorrectAnswers.forEach(item => {
+      const listItem = document.createElement("li");
 
-      let p = document.createElement("p");
+      listItem.textContent =
+        item.question +
+        " Your answer: " + item.studentAnswer +
+        ". Correct answer: " + item.correctAnswer;
 
-      p.textContent =
-        `${m.question} Your answer: ${m.student}. ` +
-        `Correct answer: ${m.answer}.`;
-
-      review.appendChild(p);
-
+      list.appendChild(listItem);
     });
 
+    review.appendChild(list);
   }
 
-  document.getElementById("certificate").classList.toggle(
-    "hidden",
-    !earned
-  );
+  if (currentQuestion < totalQuestions) {
+    const unanswered = document.createElement("p");
 
-  document.getElementById("printButton").classList.toggle(
-    "hidden",
-    !earned
-  );
+    unanswered.textContent =
+      (totalQuestions - currentQuestion) +
+      " question(s) not answered.";
 
-  if (earned) {
-
-    document.getElementById("certName").textContent = name;
-
-    document.getElementById("certScore").textContent =
-      `${correct}/${total} — ${percent}%`;
-
-    document.getElementById("certTime").textContent =
-      `Completed in ${timeText}`;
-
+    review.appendChild(unanswered);
   }
 
+  showScreen("results");
 }
 
-function restart() {
 
-  clearInterval(timerId);
+function playAgain() {
+  clearInterval(timerInterval);
 
-  showPage("setup1");
+  document.getElementById("welcomeMessage").textContent =
+    "Let's go, " + studentName + "!";
 
+  showScreen("factSelection");
+}
+
+
+function startOver() {
+  clearInterval(timerInterval);
+
+  gameMode = "";
+  selectedFamily = "";
+
+  document.getElementById("studentName").value = "";
+  document.getElementById("homeError").textContent = "";
+
+  document.querySelectorAll("[data-mode]").forEach(button => {
+    button.classList.remove("selected");
+  });
+
+  showScreen("home");
 }
 
 </script>
