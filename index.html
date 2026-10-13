@@ -1,0 +1,277 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Math Masters</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: #edf3fa;
+    font-family: Arial, sans-serif;
+    color: #20334d;
+    text-align: center;
+  }
+  main {
+    max-width: 650px;
+    margin: 35px auto;
+    padding: 28px;
+    background: white;
+    border-radius: 18px;
+    box-shadow: 0 4px 20px #0001;
+  }
+  h1 { color: #2156a5; font-size: 38px; margin-bottom: 8px; }
+  button {
+    background: #2156a5;
+    color: white;
+    border: 0;
+    border-radius: 10px;
+    padding: 14px 25px;
+    font-size: 19px;
+    cursor: pointer;
+    margin: 8px;
+  }
+  button:hover { background: #163e7b; }
+  input {
+    font-size: 28px;
+    width: 155px;
+    padding: 12px;
+    text-align: center;
+    border: 2px solid #8da8ce;
+    border-radius: 10px;
+  }
+  .question { font-size: 52px; font-weight: bold; margin: 35px 0 20px; }
+  .stats { display: flex; justify-content: space-around; gap: 10px; font-size: 19px; }
+  .timer { font-weight: bold; color: #b12b2b; }
+  .hidden { display: none; }
+  .feedback { min-height: 30px; margin: 14px; font-weight: bold; }
+  .missed { text-align: left; padding-left: 30px; line-height: 1.8; }
+  .correct { color: #16803c; }
+  .wrong { color: #b12b2b; }
+  select { padding: 10px; font-size: 18px; margin: 10px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Math Masters</h1>
+  <p>Multiplication & Division Challenge</p>
+
+  <section id="start">
+    <p>Answer 100 questions in 5 minutes!</p>
+    <p>Choose your practice mode:</p>
+    <select id="mode">
+      <option value="mixed">Multiplication & Division</option>
+      <option value="multiply">Multiplication Only</option>
+      <option value="divide">Division Only</option>
+    </select>
+    <p>Enter your name (optional):</p>
+    <input id="student" type="text" maxlength="40"
+           placeholder="Your name" style="font-size:18px;width:230px">
+    <p><button onclick="startGame()">Start Challenge</button></p>
+  </section>
+
+  <section id="game" class="hidden">
+    <div class="stats">
+      <span id="progress">Question 1 of 100</span>
+      <span class="timer" id="timer">5:00</span>
+    </div>
+    <div class="question" id="question"></div>
+    <form id="answerForm">
+      <input id="answer" type="number" inputmode="numeric"
+             autocomplete="off" required>
+      <p><button type="submit">Submit Answer</button></p>
+    </form>
+    <div id="feedback" class="feedback" aria-live="polite"></div>
+  </section>
+
+  <section id="results" class="hidden">
+    <h2>Challenge Complete!</h2>
+    <h2 id="finalScore"></h2>
+    <p id="summary"></p>
+    <p id="goal"></p>
+    <h3>Questions to Practice</h3>
+    <div id="review"></div>
+    <button onclick="startGame()">Try Again</button>
+  </section>
+</main>
+
+<script>
+const TOTAL = 100;
+const TIME_LIMIT = 300;
+let questions = [];
+let index = 0;
+let correct = 0;
+let missed = [];
+let seconds = TIME_LIMIT;
+let timerId = null;
+let active = false;
+
+const $ = id => document.getElementById(id);
+
+function shuffle(items) {
+  for (let i = items.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [items[i], items[j]] = [items[j], items[i]];
+  }
+  return items;
+}
+
+function makeQuestions(mode) {
+  let pool = [];
+  const types = mode === "mixed"
+    ? ["multiply", "divide"]
+    : [mode];
+
+  // Build all facts from 2 through 10.
+  // Include some 0 and 1 facts, but limit their frequency.
+  for (const type of types) {
+    for (let a = 2; a <= 10; a++) {
+      for (let b = 2; b <= 10; b++) {
+        if (type === "multiply") {
+          pool.push({ text: `${a} × ${b}`, answer: a * b });
+        } else {
+          pool.push({ text: `${a * b} ÷ ${a}`, answer: b });
+        }
+      }
+    }
+  }
+
+  shuffle(pool);
+  const selected = pool.slice(0, 90);
+
+  let easy = [];
+  for (const type of types) {
+    for (let a = 0; a <= 10; a++) {
+      for (let b of [0, 1]) {
+        if (type === "multiply") {
+          easy.push({ text: `${a} × ${b}`, answer: a * b });
+        } else if (b === 1) {
+          easy.push({ text: `${a} ÷ 1`, answer: a });
+        } else if (a > 0) {
+          easy.push({ text: `0 ÷ ${a}`, answer: 0 });
+        }
+      }
+    }
+  }
+
+  shuffle(easy);
+  selected.push(...easy.slice(0, 10));
+  return shuffle(selected);
+}
+
+function startGame() {
+  clearInterval(timerId);
+  questions = makeQuestions($("mode").value);
+  index = 0;
+  correct = 0;
+  missed = [];
+  seconds = TIME_LIMIT;
+  active = true;
+
+  $("start").classList.add("hidden");
+  $("results").classList.add("hidden");
+  $("game").classList.remove("hidden");
+  $("feedback").textContent = "";
+  updateTimer();
+  showQuestion();
+
+  timerId = setInterval(() => {
+    seconds--;
+    updateTimer();
+    if (seconds <= 0) finishGame();
+  }, 1000);
+}
+
+function updateTimer() {
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  $("timer").textContent = `${m}:${String(s).padStart(2, "0")}`;
+}
+
+function showQuestion() {
+  if (index >= TOTAL) {
+    finishGame();
+    return;
+  }
+  $("progress").textContent = `Question ${index + 1} of ${TOTAL}`;
+  $("question").textContent = `${questions[index].text} = ?`;
+  $("answer").value = "";
+  $("answer").focus();
+}
+
+$("answerForm").addEventListener("submit", function(event) {
+  event.preventDefault();
+  if (!active || seconds <= 0 || index >= TOTAL) return;
+
+  const value = $("answer").value.trim();
+  if (value === "") return;
+
+  const response = Number(value);
+  const q = questions[index];
+
+  if (response === q.answer) {
+    correct++;
+  } else {
+    missed.push({
+      question: q.text,
+      response: response,
+      answer: q.answer
+    });
+  }
+
+  index++;
+  showQuestion();
+});
+
+function finishGame() {
+  if (!active) return;
+  active = false;
+  clearInterval(timerId);
+
+  $("game").classList.add("hidden");
+  $("results").classList.remove("hidden");
+
+  const answered = index;
+  const percent = Math.round(correct / TOTAL * 100);
+  const name = $("student").value.trim();
+  const elapsed = TIME_LIMIT - seconds;
+  const minutes = Math.floor(elapsed / 60);
+  const remaining = elapsed % 60;
+
+  $("finalScore").textContent = `${percent}%`;
+  $("summary").textContent =
+    `${name ? name + ": " : ""}${correct} correct out of 100. ` +
+    `${answered} answered in ${minutes}:${String(remaining).padStart(2, "0")}.`;
+
+  $("goal").textContent = percent >= 95
+    ? "Congratulations! You reached the 95% Math Masters goal!"
+    : "Keep practicing! Your goal is 95% or higher.";
+
+  const review = $("review");
+  review.replaceChildren();
+
+  if (missed.length === 0) {
+    review.textContent = "No incorrect answers. Great work!";
+  } else {
+    const list = document.createElement("ol");
+    list.className = "missed";
+    missed.forEach(item => {
+      const li = document.createElement("li");
+      li.textContent =
+        `${item.question} = ${item.answer} (You answered ${item.response})`;
+      list.appendChild(li);
+    });
+    review.appendChild(list);
+  }
+
+  if (answered < TOTAL) {
+    const note = document.createElement("p");
+    note.textContent = `${TOTAL - answered} questions were not answered.`;
+    review.appendChild(note);
+  }
+}
+</script>
+</body>
+</html>
