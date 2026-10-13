@@ -1,342 +1,628 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Math Masters</title>
-<style>
-* { box-sizing: border-box; }
 
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #edf3fa;
-  color: #20334d;
-  text-align: center;
+<style>
+* {
+  box-sizing: border-box;
 }
 
-main {
-  max-width: 650px;
-  margin: 35px auto;
-  padding: 30px;
+body {
+  font-family: Arial, sans-serif;
+  background: #dff3ff;
+  text-align: center;
+  margin: 0;
+  padding: 20px;
+  color: #173653;
+}
+
+.card {
   background: white;
-  border-radius: 18px;
-  box-shadow: 0 4px 20px #0002;
+  max-width: 650px;
+  margin: 30px auto;
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 5px 20px #9bb8c8;
 }
 
 h1 {
-  color: #2156a5;
-  font-size: 40px;
+  color: #1769aa;
+  font-size: 42px;
+}
+
+h2 {
+  color: #1769aa;
 }
 
 button {
-  background: #2156a5;
+  background: #2379c5;
   color: white;
-  border: none;
-  border-radius: 10px;
-  padding: 14px 25px;
+  border: 0;
+  border-radius: 12px;
+  padding: 16px 24px;
+  margin: 8px;
   font-size: 20px;
   cursor: pointer;
-  margin: 8px;
 }
 
-button:hover { background: #163e7b; }
+button:hover {
+  background: #15558e;
+}
 
-input, select {
-  padding: 12px;
+input {
+  padding: 15px;
   font-size: 22px;
-  border: 2px solid #8da8ce;
+  border: 2px solid #8bb9dd;
   border-radius: 10px;
-  max-width: 90%;
+  max-width: 100%;
+  width: 300px;
 }
 
-input[type=number] {
-  width: 150px;
-  text-align: center;
+.hidden {
+  display: none;
 }
 
-.question {
-  font-size: 54px;
+.stop {
+  background: #b83b3b;
+}
+
+.fact {
+  min-width: 65px;
+}
+
+#question {
+  font-size: 48px;
+  margin: 25px;
+}
+
+#timer {
+  font-size: 26px;
   font-weight: bold;
-  margin: 35px 0 20px;
 }
 
-.stats {
-  display: flex;
-  justify-content: space-around;
-  gap: 10px;
-  font-size: 19px;
+#certificate {
+  border: 8px double #d4a62d;
+  padding: 25px;
+  margin-top: 20px;
+  background: #fffdf0;
 }
 
-.timer {
-  color: #b12b2b;
-  font-weight: bold;
-}
+@media print {
+  body {
+    background: white;
+  }
 
-.hidden { display: none; }
+  .card {
+    box-shadow: none;
+  }
 
-.missed {
-  text-align: left;
-  line-height: 1.8;
+  button, .noPrint {
+    display: none !important;
+  }
+
+  #certificate {
+    display: block !important;
+  }
 }
 </style>
 </head>
 
 <body>
-<main>
-<h1>Math Masters</h1>
-<p>Multiplication & Division Challenge</p>
 
-<section id="start">
-  <h2>100 Questions in 5 Minutes!</h2>
-  <p>Choose your game mode:</p>
+<div class="card">
 
-  <select id="mode">
-    <option value="mixed">Multiplication & Division</option>
-    <option value="multiply">Multiplication Only</option>
-    <option value="divide">Division Only</option>
-  </select>
+<h1>🏆 Math Masters 🏆</h1>
 
-  <p>Student name (optional):</p>
-  <input id="student" type="text" maxlength="40"
-         placeholder="Your name" style="font-size:18px">
+<section id="setup1">
+  <h2>Welcome!</h2>
+  <p>Enter your first name.</p>
 
-  <p><button onclick="startGame()">Start Challenge</button></p>
+  <input id="studentName"
+         placeholder="First name"
+         maxlength="30">
+
+  <h2>Choose Your Challenge</h2>
+
+  <button onclick="chooseMode('multiply')">
+    Multiplication
+  </button>
+
+  <button onclick="chooseMode('divide')">
+    Division
+  </button>
+
+  <button onclick="chooseMode('both')">
+    Both
+  </button>
+</section>
+
+<section id="setup2" class="hidden">
+
+  <h2>Choose Your Math Facts</h2>
+
+  <p id="modeLabel"></p>
+
+  <div id="factButtons"></div>
+
+  <button onclick="chooseFact('mixed')">
+    Mixed Facts (1–12)
+  </button>
+
+  <br>
+
+  <button onclick="showPage('setup1')">
+    Back
+  </button>
+
 </section>
 
 <section id="game" class="hidden">
-  <div class="stats">
-    <span id="progress">Question 1 of 100</span>
-    <span id="timer" class="timer">5:00</span>
-  </div>
 
-  <div id="question" class="question"></div>
+  <h2 id="gameTitle"></h2>
 
-  <form id="answerForm">
-    <input id="answer" type="number" required
-           inputmode="numeric" autocomplete="off">
-    <p><button type="submit">Submit Answer</button></p>
-  </form>
+  <p id="timer">Time: 1:00</p>
+
+  <p id="progress"></p>
+
+  <div id="question"></div>
+
+  <input id="answer"
+         type="number"
+         inputmode="numeric"
+         autocomplete="off"
+         placeholder="Your answer">
+
+  <br>
+
+  <button onclick="submitAnswer()">
+    Submit
+  </button>
+
+  <button class="stop" onclick="stopGame()">
+    Stop Game
+  </button>
+
 </section>
 
 <section id="results" class="hidden">
-  <h2>Challenge Complete!</h2>
-  <h1 id="finalScore"></h1>
-  <p id="summary"></p>
-  <h3 id="goal"></h3>
-  <h3>Questions to Practice</h3>
+
+  <h2>Challenge Results</h2>
+
+  <div id="resultDetails"></div>
+
+  <h2 id="message"></h2>
+
   <div id="review"></div>
-  <button onclick="startGame()">Try Again</button>
+
+  <div id="certificate" class="hidden">
+
+    <h1>🏆 Math Masters 🏆</h1>
+
+    <h2>Certificate of Achievement</h2>
+
+    <p>This certificate is proudly awarded to</p>
+
+    <h1 id="certName"></h1>
+
+    <p>For achieving Math Masters status!</p>
+
+    <h2 id="certScore"></h2>
+
+    <p id="certTime"></p>
+
+  </div>
+
+  <br>
+
+  <button id="printButton"
+          class="hidden"
+          onclick="window.print()">
+    Print Certificate
+  </button>
+
+  <button onclick="restart()">
+    Play Again
+  </button>
+
 </section>
-</main>
+
+</div>
 
 <script>
-const TOTAL = 100;
-const TIME_LIMIT = 300;
+
+let name = "";
+let mode = "";
+let fact = "";
 
 let questions = [];
 let index = 0;
 let correct = 0;
-let missed = [];
-let seconds = TIME_LIMIT;
+
+let mistakes = [];
+
+let seconds = 0;
+let remaining = 0;
+
 let timerId = null;
-let active = false;
+let finished = false;
 
-const $ = id => document.getElementById(id);
+function showPage(id) {
 
-function shuffle(items) {
-  for (let i = items.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [items[i], items[j]] = [items[j], items[i]];
-  }
-  return items;
+  document.querySelectorAll("section").forEach(s => {
+    s.classList.add("hidden");
+  });
+
+  document.getElementById(id).classList.remove("hidden");
+
 }
 
-function makeQuestions(mode) {
-  const pool = [];
-  const types = mode === "mixed"
-    ? ["multiply", "divide"] : [mode];
+function chooseMode(m) {
 
-  for (const type of types) {
-    for (let a = 2; a <= 10; a++) {
-      for (let b = 2; b <= 10; b++) {
-        if (type === "multiply") {
-          pool.push({
-            text: `${a} × ${b}`,
-            answer: a * b
-          });
-        } else {
-          pool.push({
-            text: `${a * b} ÷ ${a}`,
-            answer: b
-          });
-        }
-      }
-    }
-  }
+  name = document.getElementById("studentName").value.trim();
 
-  shuffle(pool);
-  const selected = pool.slice(0, 90);
-  const easy = [];
-
-  for (const type of types) {
-    for (let a = 0; a <= 10; a++) {
-      if (type === "multiply") {
-        easy.push({
-          text: `${a} × 0`,
-          answer: 0
-        });
-        easy.push({
-          text: `${a} × 1`,
-          answer: a
-        });
-      } else {
-        easy.push({
-          text: `${a} ÷ 1`,
-          answer: a
-        });
-        if (a > 0) {
-          easy.push({
-            text: `0 ÷ ${a}`,
-            answer: 0
-          });
-        }
-      }
-    }
-  }
-
-  shuffle(easy);
-  selected.push(...easy.slice(0, 10));
-  return shuffle(selected);
-}
-
-function startGame() {
-  clearInterval(timerId);
-  questions = makeQuestions($("mode").value);
-  index = 0;
-  correct = 0;
-  missed = [];
-  seconds = TIME_LIMIT;
-  active = true;
-
-  $("start").classList.add("hidden");
-  $("results").classList.add("hidden");
-  $("game").classList.remove("hidden");
-
-  updateTimer();
-  showQuestion();
-
-  timerId = setInterval(() => {
-    seconds--;
-    updateTimer();
-    if (seconds <= 0) finishGame();
-  }, 1000);
-}
-
-function updateTimer() {
-  const m = Math.floor(seconds / 60);
-  const s = seconds % 60;
-  $("timer").textContent =
-    `${m}:${String(s).padStart(2, "0")}`;
-}
-
-function showQuestion() {
-  if (index >= TOTAL) {
-    finishGame();
+  if (!name) {
+    alert("Please enter your first name.");
     return;
   }
 
-  $("progress").textContent =
-    `Question ${index + 1} of ${TOTAL}`;
+  mode = m;
 
-  $("question").textContent =
-    `${questions[index].text} = ?`;
+  document.getElementById("modeLabel").textContent =
+    m === "multiply" ? "Multiplication" :
+    m === "divide" ? "Division" :
+    "Multiplication and Division";
 
-  $("answer").value = "";
-  $("answer").focus();
+  let box = document.getElementById("factButtons");
+
+  box.innerHTML = "";
+
+  for (let i = 1; i <= 12; i++) {
+
+    let b = document.createElement("button");
+
+    b.className = "fact";
+    b.textContent = i;
+
+    b.onclick = () => chooseFact(i);
+
+    box.appendChild(b);
+
+  }
+
+  showPage("setup2");
+
 }
 
-$("answerForm").addEventListener("submit", function(e) {
-  e.preventDefault();
+function random(min, max) {
 
-  if (!active || seconds <= 0 || index >= TOTAL) return;
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 
-  const value = $("answer").value.trim();
-  if (value === "") return;
+}
 
-  const response = Number(value);
-  const q = questions[index];
+function makeQuestion() {
+
+  let operation = mode === "both"
+    ? (random(0, 1) === 0 ? "multiply" : "divide")
+    : mode;
+
+  let a, b;
+
+  if (fact === "mixed") {
+
+    a = random(2, 12);
+    b = random(2, 12);
+
+    // Include some zero and one facts,
+    // but not too many.
+
+    if (random(1, 12) === 1) {
+      a = random(0, 1);
+    }
+
+    if (random(1, 12) === 1) {
+      b = random(0, 1);
+    }
+
+  } else {
+
+    a = Number(fact);
+    b = random(0, 12);
+
+  }
+
+  if (operation === "multiply") {
+
+    return {
+      text: `${a} × ${b} = ?`,
+      answer: a * b
+    };
+
+  }
+
+  // Division cannot use zero as a divisor.
+  if (a === 0) {
+    a = 1;
+  }
+
+  return {
+    text: `${a * b} ÷ ${a} = ?`,
+    answer: b
+  };
+
+}
+
+function startGame() {
+
+  questions = [];
+  index = 0;
+  correct = 0;
+  mistakes = [];
+  finished = false;
+
+  let total = fact === "mixed" ? 100 : 20;
+
+  seconds = fact === "mixed" ? 300 : 60;
+
+  remaining = seconds;
+
+  for (let i = 0; i < total; i++) {
+    questions.push(makeQuestion());
+  }
+
+  document.getElementById("gameTitle").textContent =
+    `${name}'s Math Challenge`;
+
+  showPage("game");
+
+  showQuestion();
+
+  updateTimer();
+
+  clearInterval(timerId);
+
+  timerId = setInterval(() => {
+
+    remaining--;
+
+    updateTimer();
+
+    if (remaining <= 0) {
+      finishGame(false);
+    }
+
+  }, 1000);
+
+}
+
+function chooseFact(f) {
+
+  fact = f;
+
+  startGame();
+
+}
+
+function updateTimer() {
+
+  let minutes = Math.floor(remaining / 60);
+
+  let secs = remaining % 60;
+
+  document.getElementById("timer").textContent =
+    `Time: ${minutes}:${String(secs).padStart(2, "0")}`;
+
+}
+
+function showQuestion() {
+
+  if (index >= questions.length) {
+    finishGame(false);
+    return;
+  }
+
+  document.getElementById("progress").textContent =
+    `Question ${index + 1} of ${questions.length}`;
+
+  document.getElementById("question").textContent =
+    questions[index].text;
+
+  let input = document.getElementById("answer");
+
+  input.value = "";
+
+  input.focus();
+
+}
+
+function submitAnswer() {
+
+  if (finished) return;
+
+  let input = document.getElementById("answer");
+
+  if (input.value.trim() === "") return;
+
+  let response = Number(input.value);
+
+  let q = questions[index];
 
   if (response === q.answer) {
+
     correct++;
+
   } else {
-    missed.push({
+
+    mistakes.push({
       question: q.text,
-      response: response,
+      student: response,
       answer: q.answer
     });
+
   }
 
   index++;
-  showQuestion();
-});
 
-function finishGame() {
-  if (!active) return;
+  if (index >= questions.length) {
 
-  active = false;
+    finishGame(false);
+
+  } else {
+
+    showQuestion();
+
+  }
+
+}
+
+document.getElementById("answer").addEventListener(
+  "keydown",
+  e => {
+
+    if (e.key === "Enter") {
+      submitAnswer();
+    }
+
+  }
+);
+
+function stopGame() {
+
+  if (confirm("Are you sure you want to stop?")) {
+    finishGame(true);
+  }
+
+}
+
+function finishGame(stopped) {
+
+  if (finished) return;
+
+  finished = true;
+
   clearInterval(timerId);
 
-  $("game").classList.add("hidden");
-  $("results").classList.remove("hidden");
+  let total = questions.length;
 
-  const answered = index;
-  const percent = Math.round(correct / TOTAL * 100);
-  const name = $("student").value.trim();
-  const elapsed = TIME_LIMIT - seconds;
-  const minutes = Math.floor(elapsed / 60);
-  const remaining = elapsed % 60;
+  let percent = Math.round(correct / total * 100);
 
-  $("finalScore").textContent = `${percent}%`;
+  let elapsed = seconds - remaining;
 
-  $("summary").textContent =
-    `${name ? name + ": " : ""}` +
-    `${correct} correct out of 100. ` +
-    `${answered} answered in ` +
-    `${minutes}:${String(remaining).padStart(2, "0")}.`;
+  let minutes = Math.floor(elapsed / 60);
 
-  $("goal").textContent = percent >= 95
-    ? "Congratulations! You reached the 95% goal!"
-    : "Keep practicing! Your goal is 95%.";
+  let secs = elapsed % 60;
 
-  const review = $("review");
+  let timeText =
+    `${minutes} minute(s) and ${secs} second(s)`;
+
+  showPage("results");
+
+  const details = document.getElementById("resultDetails");
+
+  details.replaceChildren();
+
+  [
+    `Student: ${name}`,
+    `Score: ${correct} out of ${total}`,
+    `Percentage: ${percent}%`,
+    `Time: ${timeText}`,
+    ...(stopped ? ["Game stopped early."] : [])
+  ].forEach(line => {
+
+    let p = document.createElement("p");
+    p.textContent = line;
+    details.appendChild(p);
+
+  });
+
+  let message = "";
+
+  let earned =
+    !stopped &&
+    index === total &&
+    percent >= 95;
+
+  if (earned) {
+
+    message = "Congratulations! You're a Math Master!";
+
+  } else if (percent >= 80) {
+
+    message = "Great job! Keep up the good work!";
+
+  } else {
+
+    message = "Practice makes progress! Keep trying!";
+
+  }
+
+  document.getElementById("message").textContent = message;
+
+  let review = document.getElementById("review");
+
   review.replaceChildren();
 
-  if (missed.length === 0) {
-    review.textContent = "No incorrect answers!";
-  } else {
-    const list = document.createElement("ol");
-    list.className = "missed";
+  let heading = document.createElement("h3");
+  heading.textContent = "Incorrect Answers";
+  review.appendChild(heading);
 
-    missed.forEach(item => {
-      const li = document.createElement("li");
-      li.textContent =
-        `${item.question} = ${item.answer} ` +
-        `(You answered ${item.response})`;
-      list.appendChild(li);
+  if (mistakes.length === 0) {
+
+    let p = document.createElement("p");
+    p.textContent = "No incorrect answers!";
+    review.appendChild(p);
+
+  } else {
+
+    mistakes.forEach(m => {
+
+      let p = document.createElement("p");
+
+      p.textContent =
+        `${m.question} Your answer: ${m.student}. ` +
+        `Correct answer: ${m.answer}.`;
+
+      review.appendChild(p);
+
     });
 
-    review.appendChild(list);
   }
 
-  if (answered < TOTAL) {
-    const note = document.createElement("p");
-    note.textContent =
-      `${TOTAL - answered} questions were not answered.`;
-    review.appendChild(note);
+  document.getElementById("certificate").classList.toggle(
+    "hidden",
+    !earned
+  );
+
+  document.getElementById("printButton").classList.toggle(
+    "hidden",
+    !earned
+  );
+
+  if (earned) {
+
+    document.getElementById("certName").textContent = name;
+
+    document.getElementById("certScore").textContent =
+      `${correct}/${total} — ${percent}%`;
+
+    document.getElementById("certTime").textContent =
+      `Completed in ${timeText}`;
+
   }
+
 }
+
+function restart() {
+
+  clearInterval(timerId);
+
+  showPage("setup1");
+
+}
+
 </script>
+
 </body>
 </html>
