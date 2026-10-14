@@ -193,23 +193,73 @@ input {
 
 .certificate {
   display: none;
-  border: 8px double #3478C0;
-  padding: 35px 20px;
-  margin: 30px auto;
-  background: white;
-  max-width: 600px;
+  position: relative;
+  width: 100%;
+  max-width: 940px;
+  min-height: 530px;
+  margin: 28px auto;
+  padding: 34px 45px 22px;
+  background: #fffdf6;
+  border: 9px double #b38b35;
+  outline: 3px solid #193e68;
+  outline-offset: -17px;
+  text-align: center;
+  color: #193e68;
+  font-family: Georgia, "Times New Roman", serif;
 }
-
 .certificate h2 {
-  color: #205493;
-  font-size: 32px;
+  font-family: "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif;
+  font-style: italic;
+  font-variant: small-caps;
+  font-weight: normal;
+  letter-spacing: 1.5px;
+  color: #193e68;
+  font-size: clamp(30px, 4vw, 48px);
+  margin: 12px 0 14px;
 }
-
+.certificate p { font-size: 19px; margin: 12px 0; }
 .certificate-name {
-  font-size: 34px;
+  font-family: "Palatino Linotype", Georgia, serif;
+  font-style: italic;
+  font-size: clamp(32px, 5vw, 54px);
   font-weight: bold;
-  margin: 25px 0;
+  color: #a77a22;
+  margin: 12px 0;
 }
+.certificate-achievement { font-size: 25px; font-weight: bold; margin: 8px auto 12px; }
+.certificate-score { font-size: 25px !important; font-weight: bold; margin: 6px 0 !important; }
+.certificate-footer { font-style: italic; margin: 8px 0 !important; }
+.achievement-seal {
+  position: relative;
+  margin: 10px auto 0;
+  width: 104px;
+  height: 104px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 25%, #fff3ae 0%, #e9c65c 24%, #bc8a22 60%, #f7d878 78%, #a97819 100%);
+  border: 4px ridge #a87c25;
+  box-shadow: inset 0 0 0 5px #eac35d, inset 0 0 0 7px #986d1c, 0 3px 6px #8b713a77;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #68450d;
+  text-shadow: 0 1px #ffe8a3;
+  font: bold 10px Georgia, serif;
+  letter-spacing: 0.6px;
+}
+.achievement-seal .star { font-size: 35px; line-height: 1.1; }
+.achievement-seal::before, .achievement-seal::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 73px;
+  width: 24px;
+  height: 52px;
+  background: linear-gradient(90deg, #ac781d, #f7d57a, #c18b2b);
+  clip-path: polygon(0 0,100% 0,100% 100%,50% 78%,0 100%);
+}
+.achievement-seal::before { left: 16px; transform: rotate(14deg); }
+.achievement-seal::after { right: 16px; transform: rotate(-14deg); }
 
 .error {
   color: #B3261E;
@@ -251,37 +301,26 @@ input {
 
 }
 
+@page { size: letter landscape; margin: 0.4in; }
 @media print {
-
-  body {
-    background: white;
-    display: block;
-    padding: 0;
-  }
-
-  .container {
-    box-shadow: none;
-    background: white;
-    max-width: none;
-    min-height: 0;
-  }
-
-  .screen,
-  #results > * {
-    display: none !important;
-  }
-
-  #results {
-    display: block !important;
-  }
-
-  #certificate {
-    display: block !important;
-    margin: 20px auto;
-  }
-
+ html, body { margin:0!important; padding:0!important; background:white!important; }
+ body { display:block!important; }
+ .container { max-width:none!important; min-height:0!important; padding:0!important; margin:0!important; box-shadow:none!important; background:white!important; }
+ .screen, #results > * { display:none!important; }
+ #results { display:block!important; padding:0!important; margin:0!important; }
+ #certificate {
+   display:flex!important; flex-direction:column; align-items:center; justify-content:center;
+   width:10.2in!important; height:7.65in!important; max-width:none!important;
+   min-height:0!important; margin:0 auto!important; padding:0.3in 0.55in!important;
+   break-inside:avoid; page-break-inside:avoid;
+   print-color-adjust:exact; -webkit-print-color-adjust:exact;
+ }
+ .certificate h2 { font-size:40px!important; }
+ .certificate-name { font-size:47px!important; }
+ .certificate p { font-size:18px!important; }
+ .certificate-achievement { font-size:24px!important; }
+ .certificate-score { font-size:23px!important; }
 }
-
 
 .time-track { width: 100%; height: 22px; background: #d8e2ea; border-radius: 20px; overflow: hidden; margin: 0 auto 18px; }
 #timeBar { height: 100%; width: 100%; background: #24965a; border-radius: inherit; }
@@ -480,32 +519,17 @@ input {
     class="review">
   </div>
 
-  <div
-    id="certificate"
-    class="certificate">
-
+  <div id="certificate" class="certificate">
     <h2>Certificate of Achievement</h2>
-
-    <p>
-      This certificate is proudly presented to
-    </p>
-
-    <div
-      id="certificateName"
-      class="certificate-name">
+    <p>This certificate is proudly presented to</p>
+    <div id="certificateName" class="certificate-name"></div>
+    <p>For successfully demonstrating mastery of</p>
+    <div id="certificateAchievement" class="certificate-achievement"></div>
+    <p id="certificateDetails" class="certificate-score"></p>
+    <p class="certificate-footer">Congratulations, Math Master!</p>
+    <div class="achievement-seal" aria-label="Gold achievement seal">
+      <span class="star">★</span><span>ACHIEVEMENT</span>
     </div>
-
-    <p>
-      For demonstrating outstanding
-      math fact mastery!
-    </p>
-
-    <p id="certificateDetails"></p>
-
-    <p>
-      Congratulations, Math Master!
-    </p>
-
   </div>
 
   <div
@@ -1164,14 +1188,15 @@ function finishGame(reason) {
     document.getElementById("certificateName").textContent =
       studentName;
 
-    document.getElementById("certificateDetails").textContent =
-      "Score: " +
-      percentage +
-      "% — " +
-      correctAnswers +
-      " out of " +
-      totalQuestions +
-      " questions correct";
+    const operationName = gameMode === "multiplication"
+      ? "Multiplication" : gameMode === "division" ? "Division" : "Multiplication & Division";
+    const factName = selectedFamily === "mixed10" ? "Mixed Facts 1–10"
+      : selectedFamily === "mixed12" ? "Mixed Facts 1–12"
+      : gameMode === "multiplication" ? selectedFamily + " Times Tables"
+      : selectedFamily + " Fact Family";
+    document.getElementById("certificateAchievement").textContent =
+      operationName + " — " + factName;
+    document.getElementById("certificateDetails").textContent = "Score: " + percentage + "%";
 
   } else if (percentage >= 80) {
 
