@@ -353,6 +353,50 @@ body:has(#game.active) .container { background: #DFF3FF; box-shadow: none; borde
 #results .result-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px; margin-top: 22px; }
 #results .result-actions button { font-size: 16px; padding: 13px 16px; margin: 0; }
 @media(max-width:600px) { #game .game-info { padding: 12px; font-size: 15px; margin-bottom: 12vh; } #game .equation-form { gap: 8px; } #game .question { font-size: clamp(28px, 8vw, 50px); } #game #answer { width: 85px; font-size: 36px; } }
+
+/* October 14: dark navy gameplay and wide results layout */
+body:has(#game.active) { background:#102B55; }
+body:has(#game.active) .container { background:#102B55; color:#fff; }
+#game { color:#fff; }
+#game .game-info {
+  background:transparent; border:3px solid #91B9E8; border-radius:14px;
+  color:#fff; min-height:76px; gap:18px;
+}
+#game .game-info span { flex:1; min-width:0; }
+#game #progress { text-align:right; }
+#game .question { color:#fff; }
+#game #answer { color:#111827; background:#fff; border:3px solid #91B9E8; }
+#game .timer-caption {
+  border:3px solid #91B9E8; border-radius:14px;
+  padding:14px 22px; min-height:76px; display:flex;
+  align-items:center; justify-content:flex-end; color:#fff;
+}
+#game .time-track { border:2px solid #91B9E8; background:#27456D; }
+body:has(#results.active) { background:#102B55; }
+body:has(#results.active) .container {
+  background:#102B55; color:#fff; max-width:1020px;
+  border:3px solid #91B9E8; border-radius:20px;
+}
+#results .result-percent, #results .results-score,
+#results .result-message.celebration { color:#fff; }
+#results .result-message.celebration span:first-child { color:#F8D67A; }
+#results .result-percent { font-size:clamp(80px,14vw,145px); }
+#results .result-actions { margin-top:26px; }
+#results .result-actions button { border:2px solid #B7D7F5; }
+#results #reviewSummary { color:#E3EEFA; }
+@media(max-width:600px) {
+  #game .game-info { flex-direction:column; gap:6px; padding:12px; }
+  #game .game-info span, #game #progress { text-align:center; }
+  #game .timer-caption { min-height:58px; }
+  body:has(#results.active) .container { padding:24px 12px; }
+}
+@media print {
+  body:has(#results.active), body:has(#results.active) .container {
+    background:white!important; color:#193e68!important;
+    border:0!important; border-radius:0!important;
+  }
+}
+
 </style>
 </head>
 
@@ -481,7 +525,7 @@ body:has(#game.active) .container { background: #DFF3FF; box-shadow: none; borde
   </div>
   <form id="answerForm" class="equation-form">
     <label for="answer" id="question" class="question"></label>
-    <input type="number" id="answer" placeholder="?" aria-label="Your answer" autocomplete="off" inputmode="numeric" required>
+    <input type="text" pattern="[0-9]*" id="answer" placeholder="?" aria-label="Your answer" autocomplete="off" inputmode="numeric" required>
   </form>
   <div class="timer-caption" id="timer">Time: 1:00</div>
   <div class="time-track" role="progressbar" aria-label="Time remaining" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><div id="timeBar"></div></div>
