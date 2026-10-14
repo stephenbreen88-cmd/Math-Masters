@@ -294,7 +294,16 @@ input {
 
 }
 
+.result-message { text-align:center; margin:24px auto 20px; line-height:1.2; }
+.result-message.celebration { font-size:clamp(30px, 5vw, 44px); color:#205493; }
+.result-message.celebration span { display:block; }
+.result-message.celebration span:first-child { color:#a66b0c; margin-bottom:10px; }
 @page { size: letter landscape; margin: 0.4in; }
+/* Keep the full certificate available to print, but not in the results screen. */
+@media screen {
+  #certificate { display: none !important; }
+}
+
 @media print {
  html, body { margin:0!important; padding:0!important; background:white!important; }
  body { display:block!important; }
@@ -512,12 +521,12 @@ input {
 
   <p id="resultTime"></p>
 
-  <h2 id="resultMessage"></h2>
+  <h2 id="resultMessage" class="result-message"></h2>
 
-  <div
-    id="reviewSection"
-    class="review">
-  </div>
+  <div id="reviewSummary"></div>
+  <button id="reviewButton" type="button" onclick="showScreen('incorrectReview')" style="display:none;">
+    View Incorrect Answers
+  </button>
 
   <div id="certificate" class="certificate">
     <div class="certificate-content">
@@ -576,6 +585,13 @@ input {
     Main Menu
   </button>
 
+</section>
+
+<!-- INCORRECT ANSWERS: SEPARATE OPTIONAL SCREEN -->
+<section id="incorrectReview" class="screen">
+  <h1>Incorrect Answers</h1>
+  <div id="reviewSection" class="review"></div>
+  <button type="button" onclick="showScreen('results')">Back to Results</button>
 </section>
 
 </div>
@@ -1189,6 +1205,7 @@ function finishGame(reason) {
   certificate.style.display = "none";
 
   printArea.style.display = "none";
+  message.classList.remove("celebration");
 
   if (reason === "stopped") {
 
@@ -1202,8 +1219,13 @@ function finishGame(reason) {
 
   } else if (percentage >= 95) {
 
-    message.textContent =
-      "Congratulations! You're a Math Master!";
+    message.classList.add("celebration");
+    message.replaceChildren();
+    const congrats = document.createElement("span");
+    congrats.textContent = "Congratulations!";
+    const master = document.createElement("span");
+    master.textContent = "You're a Math Master!";
+    message.append(congrats, master);
 
     certificate.style.display = "block";
 
@@ -1242,6 +1264,17 @@ function finishGame(reason) {
     document.getElementById("reviewSection");
 
   review.innerHTML = "";
+  const reviewButton = document.getElementById("reviewButton");
+  const reviewSummary = document.getElementById("reviewSummary");
+  const unansweredCount = totalQuestions - currentQuestion;
+  reviewButton.style.display = incorrectAnswers.length ? "inline-block" : "none";
+  reviewButton.textContent = "View Incorrect Answers (" + incorrectAnswers.length + ")";
+  reviewSummary.textContent = incorrectAnswers.length === 0
+    ? (unansweredCount === 0 ? "No Incorrect Answers — Perfect Score!" : "No incorrect answers submitted.")
+    : incorrectAnswers.length + " incorrect answer(s).";
+  if (unansweredCount > 0) {
+    reviewSummary.textContent += " " + unansweredCount + " question(s) unanswered.";
+  }
 
   const reviewHeading =
     document.createElement("h3");
