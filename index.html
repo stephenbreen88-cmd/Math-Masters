@@ -229,38 +229,31 @@ input {
 .certificate-achievement { font-size: 25px; font-weight: bold; margin: 8px auto 12px; }
 .certificate-score { font-size: 25px !important; font-weight: bold; margin: 6px 0 !important; }
 .certificate-footer { font-style: italic; margin: 8px 0 !important; }
-.achievement-seal {
-  position: relative;
-  margin: 10px auto 0;
-  width: 104px;
-  height: 104px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 30% 25%, #fff3ae 0%, #e9c65c 24%, #bc8a22 60%, #f7d878 78%, #a97819 100%);
-  border: 4px ridge #a87c25;
-  box-shadow: inset 0 0 0 5px #eac35d, inset 0 0 0 7px #986d1c, 0 3px 6px #8b713a77;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: #68450d;
-  text-shadow: 0 1px #ffe8a3;
-  font: bold 10px Georgia, serif;
-  letter-spacing: 0.6px;
+/* Decorative award trophy and date, anchored inside the certificate border. */
+.certificate { isolation: isolate; }
+.certificate-content { position: relative; z-index: 1; width: 100%; }
+.certificate-bottom {
+  position: absolute; left: 44px; right: 44px; bottom: 30px;
+  display: flex; align-items: end; justify-content: space-between;
+  pointer-events: none;
 }
-.achievement-seal .star { font-size: 35px; line-height: 1.1; }
-.achievement-seal::before, .achievement-seal::after {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  top: 73px;
-  width: 24px;
-  height: 52px;
-  background: linear-gradient(90deg, #ac781d, #f7d57a, #c18b2b);
-  clip-path: polygon(0 0,100% 0,100% 100%,50% 78%,0 100%);
+.certificate-trophy { width: 145px; height: 155px; flex: none; }
+.certificate-date {
+  color: #193e68; font: 17px Georgia, serif; text-align: right;
+  padding-bottom: 10px; white-space: nowrap;
 }
-.achievement-seal::before { left: 16px; transform: rotate(14deg); }
-.achievement-seal::after { right: 16px; transform: rotate(-14deg); }
-
+.certificate h2 { font-size: clamp(38px, 5vw, 56px); }
+.certificate-name { font-size: clamp(42px, 6vw, 65px); }
+.certificate p { font-size: 23px; }
+.certificate-achievement { font-size: 31px; }
+.certificate-score { font-size: 31px !important; }
+.certificate-footer { font-size: 23px !important; }
+@media screen and (max-width: 650px) {
+  .certificate { padding: 24px 24px 150px; }
+  .certificate-bottom { left: 26px; right: 26px; bottom: 24px; }
+  .certificate-trophy { width: 95px; height: 110px; }
+  .certificate-date { font-size: 12px; }
+}
 .error {
   color: #B3261E;
   font-weight: bold;
@@ -309,17 +302,24 @@ input {
  .screen, #results > * { display:none!important; }
  #results { display:block!important; padding:0!important; margin:0!important; }
  #certificate {
-   display:flex!important; flex-direction:column; align-items:center; justify-content:center;
-   width:10.2in!important; height:7.65in!important; max-width:none!important;
-   min-height:0!important; margin:0 auto!important; padding:0.3in 0.55in!important;
+   display:block!important;
+   position:relative!important;
+   width:10.2in!important; height:7.65in!important;
+   max-width:none!important; min-height:0!important;
+   margin:0 auto!important; padding:0.48in 0.55in 1.75in!important;
    break-inside:avoid; page-break-inside:avoid;
    print-color-adjust:exact; -webkit-print-color-adjust:exact;
  }
- .certificate h2 { font-size:40px!important; }
- .certificate-name { font-size:47px!important; }
- .certificate p { font-size:18px!important; }
- .certificate-achievement { font-size:24px!important; }
- .certificate-score { font-size:23px!important; }
+ .certificate h2 { font-size:50px!important; margin:6px 0 22px!important; }
+ .certificate-name { font-size:61px!important; margin:19px 0!important; }
+ .certificate p { font-size:24px!important; margin:14px 0!important; }
+ .certificate-achievement { font-size:31px!important; margin:15px 0!important; }
+ .certificate-score { font-size:30px!important; }
+ .certificate-footer { font-size:24px!important; }
+ .certificate-bottom { bottom:34px!important; left:52px!important; right:52px!important; }
+ .certificate-trophy { width:155px!important; height:165px!important; }
+ .certificate-date { font-size:17px!important; }
+
 }
 
 .time-track { width: 100%; height: 22px; background: #d8e2ea; border-radius: 20px; overflow: hidden; margin: 0 auto 18px; }
@@ -520,15 +520,39 @@ input {
   </div>
 
   <div id="certificate" class="certificate">
-    <h2>Certificate of Achievement</h2>
-    <p>This certificate is proudly presented to</p>
-    <div id="certificateName" class="certificate-name"></div>
-    <p>For successfully demonstrating mastery of</p>
-    <div id="certificateAchievement" class="certificate-achievement"></div>
-    <p id="certificateDetails" class="certificate-score"></p>
-    <p class="certificate-footer">Congratulations, Math Master!</p>
-    <div class="achievement-seal" aria-label="Gold achievement seal">
-      <span class="star">★</span><span>ACHIEVEMENT</span>
+    <div class="certificate-content">
+      <h2>Certificate of Achievement</h2>
+      <p>This certificate is proudly presented to</p>
+      <div id="certificateName" class="certificate-name"></div>
+      <p>For successfully demonstrating mastery of</p>
+      <div id="certificateAchievement" class="certificate-achievement"></div>
+      <p id="certificateDetails" class="certificate-score"></p>
+      <p class="certificate-footer">Congratulations, Math Master!</p>
+    </div>
+    <div class="certificate-bottom">
+      <svg class="certificate-trophy" viewBox="0 0 160 170" role="img" aria-label="Gold achievement trophy" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="trophyGold" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#94600d"/><stop offset=".18" stop-color="#edbb40"/>
+            <stop offset=".43" stop-color="#fff1a0"/><stop offset=".7" stop-color="#d69921"/>
+            <stop offset="1" stop-color="#87540d"/>
+          </linearGradient>
+          <linearGradient id="trophyBase" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#f7d36d"/><stop offset="1" stop-color="#a46b13"/>
+          </linearGradient>
+        </defs>
+        <path d="M40 29 C9 19 4 39 18 66 C25 81 41 87 54 82" fill="none" stroke="#bc861c" stroke-width="12"/>
+        <path d="M120 29 C151 19 156 39 142 66 C135 81 119 87 106 82" fill="none" stroke="#bc861c" stroke-width="12"/>
+        <path d="M43 18 H117 V64 C117 91 99 106 80 106 C61 106 43 91 43 64 Z" fill="url(#trophyGold)" stroke="#93600f" stroke-width="3"/>
+        <path d="M52 26 H61 V70 C61 84 68 93 74 96 C57 91 51 77 51 62 Z" fill="#fff3a5" opacity=".65"/>
+        <path d="M80 38 L85 51 L99 52 L88 61 L92 75 L80 67 L68 75 L72 61 L61 52 L75 51 Z" fill="#fff1a0" stroke="#a5731d" stroke-width="1.5"/>
+        <rect x="73" y="105" width="14" height="26" rx="3" fill="url(#trophyGold)"/>
+        <path d="M61 130 H99 L108 143 H52 Z" fill="url(#trophyBase)" stroke="#956014" stroke-width="2"/>
+        <rect x="43" y="143" width="74" height="19" rx="3" fill="url(#trophyBase)" stroke="#956014" stroke-width="2"/>
+        <rect x="56" y="147" width="48" height="10" rx="1" fill="#80520f"/>
+        <text x="80" y="155" font-family="Georgia,serif" font-size="8" font-weight="bold" text-anchor="middle" fill="#fff2ad">MATH MASTER</text>
+      </svg>
+      <div id="certificateDate" class="certificate-date"></div>
     </div>
   </div>
 
@@ -1197,6 +1221,10 @@ function finishGame(reason) {
     document.getElementById("certificateAchievement").textContent =
       operationName + " — " + factName;
     document.getElementById("certificateDetails").textContent = "Score: " + percentage + "%";
+    document.getElementById("certificateDate").textContent =
+      "Date Awarded: " + new Date().toLocaleDateString("en-US", {
+        year: "numeric", month: "long", day: "numeric"
+      });
 
   } else if (percentage >= 80) {
 
