@@ -333,6 +333,26 @@ input {
 
 .time-track { width: 100%; height: 22px; background: #d8e2ea; border-radius: 20px; overflow: hidden; margin: 0 auto 18px; }
 #timeBar { height: 100%; width: 100%; background: #24965a; border-radius: inherit; }
+
+/* Focused play screen: one continuous light-blue background. */
+body:has(#game.active) { padding: 0; }
+body:has(#game.active) .container { background: #DFF3FF; box-shadow: none; border-radius: 0; max-width: none; min-height: 100vh; padding: 6vh 5vw; display: flex; flex-direction: column; justify-content: center; }
+#game { width: min(1100px,100%); margin: auto; }
+#game .game-info { justify-content: space-between; align-items: center; padding: 16px 24px; border-radius: 8px; background: #c9e8fa; margin: 0 0 9vh; text-align: left; }
+#game .equation-form { display: flex; justify-content: center; align-items: center; gap: 16px; flex-wrap: nowrap; margin: 0 auto 9vh; }
+#game .question { margin: 0; font-size: clamp(40px, 7vw, 90px); white-space: nowrap; }
+#game #answer { width: clamp(95px, 15vw, 170px); max-width: none; font-size: clamp(36px, 6vw, 76px); padding: 8px; font-weight: bold; color: #205493; border: 2px solid #9bbdd3; background: white; }
+#game .timer-caption { font-size: 22px; font-weight: bold; text-align: right; margin-bottom: 12px; }
+#game .time-track { height: 26px; margin-bottom: 12px; }
+#game .stop-button { font-size: 15px; padding: 9px 14px; margin-top: 22px; }
+#results .result-message { margin: 0 auto 18px; font-size: clamp(27px,4vw,42px); }
+#results .result-percent { font-size: clamp(90px,17vw,150px); line-height: 1; color: #205493; font-weight: 800; margin: 18px 0; }
+#results #resultName { margin: 12px 0; font-size: 23px; }
+#results .results-score { font-size: 25px; margin: 12px 0; }
+#results #resultTime { margin: 8px 0; }
+#results .result-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px; margin-top: 22px; }
+#results .result-actions button { font-size: 16px; padding: 13px 16px; margin: 0; }
+@media(max-width:600px) { #game .game-info { padding: 12px; font-size: 15px; margin-bottom: 12vh; } #game .equation-form { gap: 8px; } #game .question { font-size: clamp(28px, 8vw, 50px); } #game #answer { width: 85px; font-size: 36px; } }
 </style>
 </head>
 
@@ -453,53 +473,19 @@ input {
 
 <section id="game" class="screen">
 
-  <h1>Math Masters</h1>
 
-  <h2 id="gameTitle"></h2>
 
   <div class="game-info">
-
-    <span id="progress">
-      Question 1 of 20
-    </span>
-
-    <span id="timer">
-      Time: 1:00
-    </span>
-
+    <span id="gameTitle"></span>
+    <span id="progress">Question 1 of 20</span>
   </div>
-
-  <div class="time-track" role="progressbar" aria-label="Time remaining" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><div id="timeBar"></div></div>
-
-  <div
-    id="question"
-    class="question">
-  </div>
-
-  <form id="answerForm">
-
-    <input
-      type="number"
-      id="answer"
-      placeholder="Answer"
-      autocomplete="off"
-      required>
-
-    <br><br>
-
-    <button type="submit">
-      Submit
-    </button>
-
+  <form id="answerForm" class="equation-form">
+    <label for="answer" id="question" class="question"></label>
+    <input type="number" id="answer" placeholder="?" aria-label="Your answer" autocomplete="off" inputmode="numeric" required>
   </form>
-
-  <br>
-
-  <button
-    class="stop-button"
-    onclick="stopGame()">
-    Stop Game
-  </button>
+  <div class="timer-caption" id="timer">Time: 1:00</div>
+  <div class="time-track" role="progressbar" aria-label="Time remaining" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><div id="timeBar"></div></div>
+  <button class="stop-button" onclick="stopGame()">Stop Game</button>
 
 </section>
 
@@ -508,25 +494,18 @@ input {
 
 <section id="results" class="screen">
 
-  <h1>Math Masters Results</h1>
-
-  <h2 id="resultName"></h2>
-
-  <p
-    id="resultScore"
-    class="results-score">
-  </p>
-
-  <p id="resultPercent"></p>
-
-  <p id="resultTime"></p>
-
   <h2 id="resultMessage" class="result-message"></h2>
-
+  <p id="resultPercent" class="result-percent"></p>
+  <h2 id="resultName"></h2>
+  <p id="resultScore" class="results-score"></p>
+  <p id="resultTime"></p>
   <div id="reviewSummary"></div>
-  <button id="reviewButton" type="button" onclick="showScreen('incorrectReview')" style="display:none;">
-    View Incorrect Answers
-  </button>
+  <div class="result-actions">
+    <button id="reviewButton" type="button" onclick="showScreen('incorrectReview')" style="display:none;">View Incorrect Answers</button>
+    <div id="printArea" style="display:none;"><button onclick="window.print()">Print Certificate</button></div>
+    <button onclick="playAgain()">Play Again</button>
+    <button onclick="startOver()">Main Menu</button>
+  </div>
 
   <div id="certificate" class="certificate">
     <div class="certificate-content">
@@ -565,25 +544,6 @@ input {
     </div>
   </div>
 
-  <div
-    id="printArea"
-    style="display:none;">
-
-    <button onclick="window.print()">
-      Print Certificate
-    </button>
-
-  </div>
-
-  <br>
-
-  <button onclick="playAgain()">
-    Play Again
-  </button>
-
-  <button onclick="startOver()">
-    Main Menu
-  </button>
 
 </section>
 
@@ -1038,7 +998,7 @@ function showQuestion() {
     questions.length;
 
   document.getElementById("question").textContent =
-    questions[currentQuestion].text;
+    questions[currentQuestion].text.replace(/\?$/, "");
 
   const answerInput =
     document.getElementById("answer");
@@ -1178,7 +1138,7 @@ function finishGame(reason) {
     " correct";
 
   document.getElementById("resultPercent").textContent =
-    "Score: " + percentage + "%";
+    percentage + "%";
 
   const minutes =
     Math.floor(elapsedSeconds / 60);
