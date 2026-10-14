@@ -282,6 +282,9 @@ input {
 
 }
 
+
+.time-track { width: 100%; height: 22px; background: #d8e2ea; border-radius: 20px; overflow: hidden; margin: 0 auto 18px; }
+#timeBar { height: 100%; width: 100%; background: #24965a; border-radius: inherit; }
 </style>
 </head>
 
@@ -417,6 +420,8 @@ input {
     </span>
 
   </div>
+
+  <div class="time-track" role="progressbar" aria-label="Time remaining" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><div id="timeBar"></div></div>
 
   <div
     id="question"
@@ -938,7 +943,7 @@ function startGame() {
 
   timerInterval = setInterval(function() {
 
-    timeRemaining--;
+    timeRemaining = Math.max(0, Math.ceil(timeLimit - (Date.now() - gameStartTime) / 1000));
 
     updateTimer();
 
@@ -946,7 +951,7 @@ function startGame() {
       finishGame("time");
     }
 
-  }, 1000);
+  }, 50);
 
 }
 
@@ -991,6 +996,11 @@ function updateTimer() {
   const seconds =
     timeRemaining % 60;
 
+  const ratio = Math.max(0, Math.min(1, (timeLimit - (Date.now() - gameStartTime) / 1000) / timeLimit));
+  const bar = document.getElementById("timeBar");
+  bar.style.width = (ratio * 100) + "%";
+  bar.style.background = ratio > 0.5 ? "#24965a" : ratio > 0.2 ? "#e2b529" : "#d94444";
+  bar.parentElement.setAttribute("aria-valuenow", Math.round(ratio * 100));
   document.getElementById("timer").textContent =
     "Time: " +
     minutes +
