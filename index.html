@@ -397,6 +397,48 @@ body:has(#results.active) .container {
   }
 }
 
+
+/* Final polish: consistent navy across every screen, wider selection panel. */
+body { background:#102B55; color:#fff; }
+.container {
+  background:#102B55; color:#fff; border:3px solid #91B9E8;
+  max-width:980px; width:100%; border-radius:20px;
+}
+h1, h2, h3, .name-section label { color:#fff; }
+#home h1, #factSelection h1 { color:#fff; }
+#home, #factSelection { color:#fff; }
+#home input { background:#fff; color:#111827; }
+#home .error { color:#FFD1D1; }
+#factSelection .fact-buttons { max-width:780px; grid-template-columns:repeat(6,minmax(0,1fr)); gap:12px; }
+#factSelection .fact-buttons button { min-height:64px; }
+#factSelection .mixed-buttons button { min-width:220px; }
+#factSelection #welcomeMessage { color:#E0EEFF; }
+#incorrectReview { color:#fff; }
+#incorrectReview .review { max-width:760px; }
+#game .timer-caption.time-track {
+  position:relative; display:flex; align-items:center; justify-content:flex-end;
+  width:100%; height:76px; min-height:76px; margin:0 0 12px;
+  padding:0 22px; overflow:hidden; border:3px solid #91B9E8;
+  border-radius:14px; background:#27456D; isolation:isolate;
+}
+#game .timer-caption.time-track #timeBar {
+  position:absolute; z-index:-1; top:0; left:0; height:100%;
+  border-radius:0; transition:width .08s linear;
+}
+#game .timer-caption.time-track #timer {
+  position:relative; z-index:1; color:#fff; font-size:23px;
+  font-weight:800; text-shadow:0 1px 3px #102B55;
+}
+#game .game-info { margin-bottom:9vh; }
+@media(max-width:700px) {
+  #factSelection .fact-buttons { grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .container { padding:26px 15px; }
+  #game .timer-caption.time-track { height:62px; min-height:62px; }
+}
+@media print {
+  body, .container { background:white!important; color:#193e68!important; border:0!important; }
+}
+
 </style>
 </head>
 
@@ -527,8 +569,10 @@ body:has(#results.active) .container {
     <label for="answer" id="question" class="question"></label>
     <input type="text" pattern="[0-9]*" id="answer" placeholder="?" aria-label="Your answer" autocomplete="off" inputmode="numeric" required>
   </form>
-  <div class="timer-caption" id="timer">Time: 1:00</div>
-  <div class="time-track" role="progressbar" aria-label="Time remaining" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><div id="timeBar"></div></div>
+  <div class="timer-caption time-track" role="progressbar" aria-label="Time remaining" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
+    <div id="timeBar"></div>
+    <span id="timer">Time: 1:00</span>
+  </div>
   <button class="stop-button" onclick="stopGame()">Stop Game</button>
 
 </section>
