@@ -492,6 +492,11 @@ h1, h2, h3, .name-section label { color:#fff; }
   <h2>Select a Game Mode</h2>
 
   <div class="mode-buttons">
+    <button type="button" data-mode="addition" onclick="selectMode('addition')">Addition +</button>
+    <button type="button" data-mode="subtraction" onclick="selectMode('subtraction')">Subtraction −</button>
+    <button type="button" data-mode="addsub" onclick="selectMode('addsub')">Both + −</button>
+  </div>
+  <div class="mode-buttons">
 
     <button
       type="button"
@@ -565,11 +570,11 @@ h1, h2, h3, .name-section label { color:#fff; }
 
   <div class="mixed-buttons">
 
-    <button onclick="selectFacts('mixed10')">
+    <button id="mixed10Button" onclick="selectFacts('mixed10')">
       Mixed Facts 1–10
     </button>
 
-    <button onclick="selectFacts('mixed12')">
+    <button id="mixed12Button" onclick="selectFacts('mixed12')">
       Mixed Facts 1–12
     </button>
 
@@ -781,83 +786,33 @@ function continueToFacts() {
 
 // CUSTOMIZE SECOND PAGE BY GAME MODE
 
-function updateFactSelectionPage() {
-
-  const title =
-    document.getElementById("factPageTitle");
-
-  const heading =
-    document.getElementById("factFamilyHeading");
-
-  if (gameMode === "multiplication") {
-
-    title.textContent =
-      "Choose Your Multiplication Facts";
-
-    heading.textContent =
-      "Select a Multiplication Fact Family";
-
-  } else if (gameMode === "division") {
-
-    title.textContent =
-      "Choose Your Division Facts";
-
-    heading.textContent =
-      "Select a Division Fact Family";
-
-  } else {
-
-    title.textContent =
-      "Choose Your Multiplication & Division Facts";
-
-    heading.textContent =
-      "Select a Multiplication & Division Fact Family";
-
-  }
-
-  createFactButtons();
-
+function isAddSub() { return ["addition", "subtraction", "addsub"].includes(gameMode); }
+function modeName() {
+  return ({addition:"Addition",subtraction:"Subtraction",addsub:"Addition & Subtraction",multiplication:"Multiplication",division:"Division",both:"Multiplication & Division"})[gameMode];
 }
-
+function mixedName(family) {
+  return isAddSub() ? (family==="mixed10" ? "Mixed Facts Within 10" : "Mixed Facts Within 20") : (family==="mixed10" ? "Mixed Facts 1–10" : "Mixed Facts 1–12");
+}
+function updateFactSelectionPage() {
+  document.getElementById("factPageTitle").textContent="Choose Your "+modeName()+" Facts";
+  document.getElementById("factFamilyHeading").textContent="Select a "+modeName()+" Fact Family";
+  document.getElementById("mixed10Button").textContent=mixedName("mixed10");
+  document.getElementById("mixed12Button").textContent=mixedName("mixed12");
+  createFactButtons();
+}
 
 // CREATE 12 FACT FAMILY BUTTONS
 
 function createFactButtons() {
-
-  const container =
-    document.getElementById("factButtons");
-
-  container.innerHTML = "";
-
-  for (let i = 1; i <= 12; i++) {
-
-    const button =
-      document.createElement("button");
-
-    if (gameMode === "multiplication") {
-
-      button.textContent = "×" + i;
-
-    } else if (gameMode === "division") {
-
-      button.textContent = "÷" + i;
-
-    } else {
-
-      button.textContent = "× ÷ " + i;
-
-    }
-
-    button.onclick = function() {
-      selectFacts(i);
-    };
-
+  const container=document.getElementById("factButtons");
+  container.innerHTML="";
+  for(let i=1;i<=12;i++) {
+    const button=document.createElement("button");
+    button.textContent=({addition:"+",subtraction:"−",addsub:"+ −",multiplication:"×",division:"÷",both:"× ÷"})[gameMode]+" "+i;
+    button.onclick=()=>selectFacts(i);
     container.appendChild(button);
-
   }
-
 }
-
 
 // SELECT INDIVIDUAL OR MIXED FACTS
 
@@ -899,21 +854,10 @@ function randomNumber(min, max) {
 // SELECT OPERATION
 
 function chooseOperation() {
-
-  if (gameMode === "multiplication") {
-    return "multiplication";
-  }
-
-  if (gameMode === "division") {
-    return "division";
-  }
-
-  return Math.random() < 0.5
-    ? "multiplication"
-    : "division";
-
+  if(gameMode==="addsub") return Math.random()<0.5 ? "addition" : "subtraction";
+  if(gameMode==="both") return Math.random()<0.5 ? "multiplication" : "division";
+  return gameMode;
 }
-
 
 // SELECT FACTOR
 
@@ -940,84 +884,47 @@ function chooseFactor(maximum) {
 // GENERATE ONE QUESTION
 
 function makeQuestion() {
-
-  const operation = chooseOperation();
-
-  const isMixed =
-    selectedFamily === "mixed10" ||
-    selectedFamily === "mixed12";
-
-  let maximum = 12;
-
-  if (selectedFamily === "mixed10") {
-    maximum = 10;
-  }
-
-  let a;
-  let b;
-
-  let questionText;
-  let answer;
-
-  if (isMixed) {
-
-    a = chooseFactor(maximum);
-    b = chooseFactor(maximum);
-
-  } else {
-
-    a = Number(selectedFamily);
-    b = chooseFactor(12);
-
-  }
-
-  if (operation === "multiplication") {
-
-    if (Math.random() < 0.5) {
-      [a, b] = [b, a];
-    }
-
-    questionText =
-      a + " × " + b + " = ?";
-
-    answer = a * b;
-
-  } else {
-
-    // Division never uses zero as a divisor.
-    // All division answers are whole numbers.
-
-    if (isMixed) {
-
-      if (b === 0) {
-        b = randomNumber(1, maximum);
+  const operation=chooseOperation();
+  const isMixed=selectedFamily==="mixed10" || selectedFamily==="mixed12";
+  let a,b,answer,questionText;
+  if(isAddSub()) {
+    if(isMixed) {
+      const limit=selectedFamily==="mixed10" ? 10 : 20;
+      if(operation==="addition") {
+        a=randomNumber(0,limit); b=randomNumber(0,limit-a);
+        if(Math.random()<0.5) [a,b]=[b,a];
+        answer=a+b; questionText=a+" + "+b+" = ?";
+      } else {
+        a=randomNumber(0,limit); b=randomNumber(0,a);
+        answer=a-b; questionText=a+" − "+b+" = ?";
       }
-
     } else {
-
-      // The chosen fact family is the divisor.
-      b = Number(selectedFamily);
-
-      a = chooseFactor(12);
-
+      const family=Number(selectedFamily);
+      const partner=chooseFactor(12);
+      if(operation==="addition") {
+        a=family; b=partner;
+        if(Math.random()<0.5) [a,b]=[b,a];
+        answer=a+b; questionText=a+" + "+b+" = ?";
+      } else {
+        a=family+partner; b=family;
+        answer=partner; questionText=a+" − "+b+" = ?";
+      }
     }
-
-    const dividend = a * b;
-
-    questionText =
-      dividend + " ÷ " + b + " = ?";
-
-    answer = a;
-
+  } else {
+    const maximum=selectedFamily==="mixed10" ? 10 : 12;
+    if(isMixed) {a=chooseFactor(maximum);b=chooseFactor(maximum);}
+    else {a=Number(selectedFamily);b=chooseFactor(12);}
+    if(operation==="multiplication") {
+      if(Math.random()<0.5) [a,b]=[b,a];
+      answer=a*b;questionText=a+" × "+b+" = ?";
+    } else {
+      if(isMixed) {if(b===0) b=randomNumber(1,maximum);}
+      else {b=Number(selectedFamily);a=chooseFactor(12);}
+      answer=a;questionText=(a*b)+" ÷ "+b+" = ?";
+    }
   }
-
-  return {
-    text: questionText,
-    answer: answer
-  };
-
+  return {text:questionText,answer:answer};
 }
-
 
 // GENERATE ALL QUESTIONS
 
@@ -1051,35 +958,9 @@ function startGame() {
 
   gameStartTime = Date.now();
 
-  let title = "";
-
-  if (gameMode === "multiplication") {
-
-    title = "Multiplication";
-
-  } else if (gameMode === "division") {
-
-    title = "Division";
-
-  } else {
-
-    title = "Multiplication & Division";
-
-  }
-
-  if (selectedFamily === "mixed10") {
-
-    title += " — Mixed Facts 1–10";
-
-  } else if (selectedFamily === "mixed12") {
-
-    title += " — Mixed Facts 1–12";
-
-  } else {
-
-    title += " — " + selectedFamily + " Facts";
-
-  }
+  let title=modeName();
+  if(selectedFamily==="mixed10" || selectedFamily==="mixed12") title+=" — "+mixedName(selectedFamily);
+  else title+=" — "+selectedFamily+" Facts";
 
   document.getElementById("gameTitle").textContent =
     title;
@@ -1302,7 +1183,7 @@ function finishGame(reason) {
     message.textContent =
       "Time's up! Keep practicing!";
 
-  } else if (percentage >= 95) {
+  } else if (reason === "complete" && percentage >= 95) {
 
     message.classList.add("celebration");
     message.replaceChildren();
@@ -1319,12 +1200,8 @@ function finishGame(reason) {
     document.getElementById("certificateName").textContent =
       studentName;
 
-    const operationName = gameMode === "multiplication"
-      ? "Multiplication" : gameMode === "division" ? "Division" : "Multiplication & Division";
-    const factName = selectedFamily === "mixed10" ? "Mixed Facts 1–10"
-      : selectedFamily === "mixed12" ? "Mixed Facts 1–12"
-      : gameMode === "multiplication" ? selectedFamily + " Times Tables"
-      : selectedFamily + " Fact Family";
+    const operationName=modeName();
+    const factName=(selectedFamily==="mixed10" || selectedFamily==="mixed12") ? mixedName(selectedFamily) : (gameMode==="multiplication" ? selectedFamily+" Times Tables" : selectedFamily+" Fact Family");
     document.getElementById("certificateAchievement").textContent =
       operationName + " — " + factName;
     document.getElementById("certificateDetails").textContent = "Score: " + percentage + "%";
