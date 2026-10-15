@@ -54,6 +54,16 @@
 #game .timer-label{position:relative;z-index:1;margin:0;color:white;font-size:clamp(22px,3vw,29px);font-weight:800;text-shadow:0 2px 4px #001c39}
 #game .stop{align-self:center;margin:17px auto 0;padding:8px 15px;font-size:14px;background:#9a303a;border-color:#d8757b}
 @media(max-width:520px){#game .game-info,#game .timer-box{height:70px;min-height:70px;padding:8px}#game .game-info{font-size:13px}#game .question{gap:5px}}
+
+/* Full-bleed navy gameplay: no surrounding card or nested boxes. */
+body:has(#game.active){background:#071b37;padding:0;display:block}
+body:has(#game.active) .container{width:100%;max-width:none;min-height:100dvh;border:0;border-radius:0;box-shadow:none;background:#071b37;padding:clamp(18px,4vw,42px);display:flex;align-items:stretch;justify-content:center}
+#game.active{width:min(100%,1050px);min-height:calc(100dvh - 84px);margin:0 auto;display:flex;flex-direction:column;justify-content:space-between}
+#game .game-info,#game .timer-box{background:#102e57;border:3px solid #91b9e8;width:100%;height:78px;min-height:78px;border-radius:12px}
+#game .game-center{flex:1;min-height:180px;display:flex;justify-content:center;align-items:center}
+#game .question{color:white}
+#game #answer{background:#fff;color:#111}
+#game .stop{margin:14px auto 0}
 </style>
 </head>
 <body><main class="container">
@@ -69,7 +79,7 @@
   <div class="game-info"><span id="gameTitle"></span><span id="progress"></span></div>
   <div class="game-center">
     <form id="answerForm" autocomplete="off">
-      <div id="question" class="question"></div>
+      <div id="question" class="question"><input id="answer" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" aria-label="Your answer" placeholder="?" /></div>
     </form>
   </div>
   <div class="timer-box">
@@ -105,7 +115,7 @@ return {text:`${a} ${symbol} ${b} = ?`,answer};}
 function selectFacts(family){selectedFamily=family;const mixed=typeof family==='string'&&family.startsWith('mixed');limit=mixed?300:60;questions=Array.from({length:mixed?100:20},makeQuestion);startGame();}
 function factLabel(){if(typeof selectedFamily==='number')return symbols[gameMode]+' '+selectedFamily+' Facts';if(addSub())return selectedFamily==='mixed10'?'Mixed Facts Within 10':'Mixed Facts Within 20';return selectedFamily==='mixed10'?'Mixed Facts 1–10':'Mixed Facts 1–12';}
 function startGame(){clearInterval(ticker);index=0;correct=0;incorrect=[];finished=false;start=Date.now();el('gameTitle').textContent=modes[gameMode]+' — '+factLabel();showScreen('game');showQuestion();updateTimer();ticker=setInterval(()=>{updateTimer();if(Date.now()-start>=limit*1000)finishGame('time');},100);}
-function showQuestion(){el('progress').textContent=`Question ${index+1} of ${questions.length}`;el('question').replaceChildren();const parts=questions[index].text.split('?');el('question').append(document.createTextNode(parts[0]));const box=el('answer');box.value='';box.placeholder='?';el('question').append(box);if(parts[1])el('question').append(document.createTextNode(parts[1]));el('answer').focus();}
+function showQuestion(){el('progress').textContent=`Question ${index+1} of ${questions.length}`;const box=el('answer');el('question').replaceChildren();const parts=questions[index].text.split('?');el('question').append(document.createTextNode(parts[0]));box.value='';box.placeholder='?';el('question').append(box);if(parts[1])el('question').append(document.createTextNode(parts[1]));el('answer').focus();}
 function updateTimer(){const remaining=Math.max(0,limit-(Date.now()-start)/1000),secs=Math.ceil(remaining),ratio=remaining/limit;el('timer').textContent=`Time: ${Math.floor(secs/60)}:${String(secs%60).padStart(2,'0')}`;el('timeBar').style.width=(ratio*100)+'%';el('timeBar').style.background=ratio>.5?'#2ebf71':ratio>.2?'#e8b83e':'#ec5353';el('timeBar').parentElement.setAttribute('aria-valuenow',String(Math.round(ratio*100)));}
 el('answerForm').addEventListener('submit',e=>{e.preventDefault();if(finished)return;if(Date.now()-start>=limit*1000){finishGame('time');return;}const raw=el('answer').value.trim();if(!/^\d+$/.test(raw))return;const submitted=Number(raw),q=questions[index];if(submitted===q.answer)correct++;else incorrect.push({text:q.text,submitted,answer:q.answer});index++;if(index===questions.length)finishGame('complete');else showQuestion();});
 function stopGame(){finishGame('stopped');}
