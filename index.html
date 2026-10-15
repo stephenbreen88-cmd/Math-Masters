@@ -66,6 +66,29 @@ body:has(#game.active) .container{width:100%;max-width:none;min-height:100dvh;bo
 #game .stop{margin:14px auto 0}
 #game #question{display:flex!important;align-items:center!important;justify-content:center!important;gap:10px!important}
 #game #answer{display:inline-block!important;visibility:visible!important;opacity:1!important;position:static!important;flex:none!important;min-width:90px!important}
+
+/* October 14: consistent navy, no outer cards on any screen. */
+html,body{background:#071b37!important;min-height:100%; }
+body{padding:0!important;display:block!important}
+.container{width:100%!important;max-width:none!important;min-height:100dvh!important;
+  margin:0!important;padding:clamp(20px,4vw,42px)!important;background:#071b37!important;
+  border:0!important;border-radius:0!important;box-shadow:none!important}
+#home.active,#factSelection.active,#results.active,#incorrectReview.active{
+  width:min(100%,1050px);margin:0 auto;background:transparent!important;
+  border:0!important;box-shadow:none!important}
+#home.active{padding-top:clamp(30px,7vh,85px)}
+#results.active{min-height:calc(100dvh - 84px)!important}
+#results .result-center{gap:15px!important}
+#results .result-percent{margin:14px 0!important}
+#game .question{font-size:clamp(46px,8.8vw,71.5px)!important;
+  letter-spacing:.035em!important;gap:15px!important}
+#game #answer{font-size:inherit!important;width:clamp(94px,15vw,135px)!important;
+  min-width:0!important;padding:5px 8px!important;color:#111!important}
+@media print{
+ body{background:white!important}
+ .container{background:white!important;padding:0!important;min-height:0!important}
+}
+
 </style>
 </head>
 <body><main class="container">
