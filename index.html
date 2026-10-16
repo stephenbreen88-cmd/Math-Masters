@@ -190,6 +190,24 @@ body{display:block!important;padding:0!important;background:#071b37!important}
  #certificate .certificate-messages{margin:12px auto 0!important}
  #certificate .certificate-bottom{bottom:20px!important}
 }
+
+/* Certificate print fix: isolate one landscape sheet and keep the motto visible. */
+@page { size: letter landscape; margin: 0; }
+@media print {
+ html,body { width:11in!important;height:8.5in!important;min-height:0!important;max-height:8.5in!important;margin:0!important;padding:0!important;overflow:hidden!important;background:#fff!important; }
+ body > *:not(#certificate) { display:none!important; }
+ #certificate {
+  display:flex!important;position:absolute!important;top:.3in!important;left:.3in!important;
+  width:10.4in!important;height:7.9in!important;min-height:0!important;max-height:7.9in!important;
+  box-sizing:border-box!important;margin:0!important;padding:25px 32px 110px!important;
+  flex-direction:column!important;align-items:center!important;justify-content:center!important;
+  break-before:avoid!important;break-after:avoid!important;break-inside:avoid!important;
+  page-break-before:avoid!important;page-break-after:avoid!important;page-break-inside:avoid!important;
+  overflow:hidden!important;
+ }
+ #certificate .certificate-messages {display:block!important;visibility:visible!important;margin:14px auto 0!important;}
+ #certificate .certificate-motto {display:block!important;visibility:visible!important;color:#ad6418!important;font-size:25px!important;}
+}
 </style>
 </head>
 <body><main class="container">
