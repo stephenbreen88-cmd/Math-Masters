@@ -144,6 +144,13 @@ body{display:block!important;padding:0!important;background:#071b37!important}
 @keyframes firework-pop{0%{opacity:0;transform:translate(0,0) scale(.2)}15%{opacity:1}75%{opacity:1}100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.35)}}
 @media(prefers-reduced-motion:reduce){.firework-spark{animation:none;opacity:.75}}
 
+
+/* October 15: identical outer dimensions for the game information and timer bars. */
+#game .game-info,#game .timer-box{box-sizing:border-box!important;width:100%!important;height:78px!important;min-height:78px!important;max-height:78px!important;flex:0 0 78px!important;padding:12px 20px!important;margin-left:0!important;margin-right:0!important;border:3px solid #91b9e8!important;border-radius:12px!important}
+@media(max-width:520px){#game .game-info,#game .timer-box{height:70px!important;min-height:70px!important;max-height:70px!important;flex-basis:70px!important;padding:8px!important}}
+
+/* Lower the upper information bar while preserving both bars at equal height. */
+#game.active .game-info{margin-top:38px!important;}
 </style>
 </head>
 <body><main class="container">
@@ -168,7 +175,7 @@ body{display:block!important;padding:0!important;background:#071b37!important}
   </div>
   <button class="stop" onclick="stopGame()">Stop Game</button>
 </section>
-<section id="results" class="screen"><div class="result-center"><h2 id="resultMessage" class="result-message"></h2><h2 id="resultName" class="result-name"></h2><p id="resultPercent" class="result-percent"></p><p id="resultScore" class="result-detail"></p><p id="resultTime" class="result-detail"></p><p id="reviewSummary" class="review-note"></p><button id="printButton" onclick="window.print()" hidden>Print Certificate</button></div><div class="result-bottom"><button id="reviewButton" class="secondary" onclick="showScreen('incorrectReview')">View Incorrect Answers (0)</button><button onclick="playAgain()">Play Again</button><button onclick="startOver()">Main Menu</button></div></section>
+<section id="results" class="screen"><div class="result-center"><h2 id="resultMessage" class="result-message"></h2><h2 id="resultName" class="result-name"></h2><p id="resultPercent" class="result-percent"></p><p id="resultScore" class="result-detail"></p><p id="resultTime" class="result-detail"></p><p id="reviewSummary" class="review-note"></p><button id="printButton" onclick="window.print()" hidden>Print Certificate</button></div><div class="result-bottom"><button id="reviewButton" onclick="showScreen('incorrectReview')">View Incorrect Answers (0)</button><button onclick="playAgain()">Play Again</button><button onclick="startOver()">Main Menu</button></div></section>
 <section id="incorrectReview" class="screen"><h1>Incorrect Answers</h1><div id="reviewSection" class="review"></div><button onclick="showScreen('results')">Back to Results</button></section>
 </main>
 <div id="celebration" aria-live="polite"><h1>⭐ YOU ARE A MATH MASTER! ⭐</h1><p>Congratulations! Your hard work paid off!</p></div>
