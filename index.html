@@ -89,17 +89,36 @@ body{padding:0!important;display:block!important}
  .container{background:white!important;padding:0!important;min-height:0!important}
 }
 
+
+/* October 15: precise spacing refinements; preserve game mechanics. */
+#home.active{padding-top:0!important;min-height:calc(100dvh - 84px);
+ display:flex!important;flex-direction:column;justify-content:center;align-items:center}
+#home .mode-buttons{width:min(100%,740px);row-gap:30px;margin:22px auto 26px}
+#home .motto{margin:25px auto 0;font-size:25px}
+#factSelection.active{min-height:calc(100dvh - 84px);display:flex!important;
+ flex-direction:column;justify-content:center;align-items:stretch;padding-top:25px}
+#game.active{min-height:calc(100dvh - 84px);display:flex!important;
+ flex-direction:column;justify-content:space-around;align-items:center}
+#game .game-info{margin-top:18px!important}
+#game .timer-box{margin-bottom:0!important}
+#game .question{font-size:clamp(49px,9.25vw,77px)!important;gap:23px!important}
+#game #answer{margin-left:13px!important}
+#game .stop{margin-top:0!important}
+#results.active{justify-content:center!important;gap:34px!important}
+#results .result-bottom{margin-top:0!important;padding-top:0!important}
+#results .result-detail,#results .review-note{font-size:clamp(23px,2.7vw,27px)!important}
+@media(max-width:620px){#home .mode-buttons{row-gap:20px}#game .question{gap:12px!important}#game #answer{margin-left:8px!important}}
 </style>
 </head>
 <body><main class="container">
 <section id="home" class="screen active">
-<h1>Are You a Math Master?</h1><p class="motto">I Can Do Hard Things!</p><h2>Select a Game Mode</h2>
+<h1>Are You a Math Master?</h1><h2>Select a Game Mode</h2>
 <div class="mode-buttons">
 <button data-mode="addition" onclick="selectMode('addition')">Addition +</button><button data-mode="subtraction" onclick="selectMode('subtraction')">Subtraction −</button><button data-mode="addsub" onclick="selectMode('addsub')">Both + −</button>
 <button data-mode="multiplication" onclick="selectMode('multiplication')">Multiplication ×</button><button data-mode="division" onclick="selectMode('division')">Division ÷</button><button data-mode="multdiv" onclick="selectMode('multdiv')">Both × ÷</button>
-</div><label for="studentName">Enter Your First Name</label><input id="studentName" maxlength="30" autocomplete="given-name" placeholder="First name"><button class="continue" onclick="continueToFacts()">Continue</button><p id="homeError" class="error" role="alert"></p>
+</div><label for="studentName">Enter Your First Name</label><input id="studentName" maxlength="30" autocomplete="given-name" placeholder="First name"><button class="continue" onclick="continueToFacts()">Continue</button><p id="homeError" class="error" role="alert"></p><p class="motto">I Can Do Hard Things!</p>
 </section>
-<section id="factSelection" class="screen"><h1 id="factTitle">Choose Your Facts</h1><p id="welcome"></p><h2>Select a Fact Family</h2><div id="factButtons" class="fact-buttons"></div><h2>Mixed Facts</h2><div id="mixedButtons" class="mixed-buttons"></div><p class="notes">Individual fact family: 20 questions in 1 minute.<br>Mixed facts: 100 questions in 5 minutes.</p><button class="secondary back" onclick="showScreen('home')">Back</button></section>
+<section id="factSelection" class="screen"><h1 id="factTitle">Choose Your Facts</h1><div id="factButtons" class="fact-buttons"></div><h2>Mixed Facts</h2><div id="mixedButtons" class="mixed-buttons"></div><p class="notes">Individual fact family: 20 questions in 1 minute.<br>Mixed facts: 100 questions in 5 minutes.</p><button class="secondary back" onclick="showScreen('home')">Back</button></section>
 <section id="game" class="screen">
   <div class="game-info"><span id="gameTitle"></span><span id="progress"></span></div>
   <div class="game-center">
