@@ -151,6 +151,23 @@ body{display:block!important;padding:0!important;background:#071b37!important}
 
 /* Lower the upper information bar while preserving both bars at equal height. */
 #game.active .game-info{margin-top:38px!important;}
+
+#results .result-bottom > button,
+#results .result-bottom > button#reviewButton {
+  appearance:none !important;
+  background-color:#2865b2 !important;
+  border:2px solid #6293ce !important;
+  color:#fff !important;
+}
+#results .result-bottom > button:hover,
+#results .result-bottom > button#reviewButton:hover {
+  background-color:#377bcc !important;
+}
+
+/* Match Back to the fact-family selection buttons and separate it from mixed facts. */
+#factSelection button.back,
+#factSelection button.back.secondary {background:#2865b2 !important;border:2px solid #6293ce !important;color:#fff !important;margin-top:38px !important;}
+#factSelection button.back:hover {background:#377bcc !important;}
 </style>
 </head>
 <body><main class="container">
