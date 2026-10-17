@@ -341,11 +341,48 @@ function multiplicationDeck(family){
   const easyOne=shuffleDeck(Array.from({length:max-1},(_,i)=>i+2)).slice(0,5).map(b=>[1,b]);
   return shuffleDeck([...hard,...repeats,...easyZero,...easyOne].map(([a,b])=>multiplicationQuestion(a,b)));
 }
+// For individual families, cover every 0–12 fact before seven distinct repeats.
+function familyDeck(family){
+  const ops=gameMode==='addsub'?['addition','subtraction']:gameMode==='multdiv'?['multiplication','division']:[gameMode];
+  const make=(op,b)=>{
+    if(op==='multiplication')return multiplicationQuestion(family,b);
+    if(op==='division')return {text:`${family*b} ÷ ${family} = ?`,answer:b};
+    if(op==='addition'){
+      let a=family,c=b;if(Math.random()<.5)[a,c]=[c,a];
+      return {text:`${a} + ${c} = ?`,answer:a+c};
+    }
+    return {text:`${family+b} − ${family} = ?`,answer:b};
+  };
+  const facts=Array.from({length:13},(_,b)=>b);
+  const repeats=shuffleDeck([...facts]).slice(0,7);
+  const all=[...facts,...repeats];
+  return shuffleDeck(all.map((b,i)=>make(ops.length===1?ops[0]:ops[i%ops.length],b)));
+}
+// Division mixed: 5 zero quotients, 5 one quotients, 90 harder facts.
+function divisionDeck(family,count=100){
+  const max=family==='mixed10'?10:12;
+  const easy=Math.round(count*.05);
+  const hardCount=count-2*easy;
+  const hard=[];
+  for(let b=1;b<=max;b++)for(let q=2;q<=max;q++)hard.push([b,q]);
+  const chosen=shuffleDeck([...hard]).slice(0,hardCount);
+  while(chosen.length<hardCount)chosen.push(hard[chosen.length%hard.length]);
+  const zeros=shuffleDeck(Array.from({length:max},(_,i)=>i+1)).slice(0,easy).map(b=>[b,0]);
+  const ones=shuffleDeck(Array.from({length:max},(_,i)=>i+1)).slice(0,easy).map(b=>[b,1]);
+  return shuffleDeck([...chosen,...zeros,...ones].map(([b,q])=>({text:`${b*q} ÷ ${b} = ?`,answer:q})));
+}
+function mixedBothDeck(family){
+  // Fifty of each operation; no more than five zero and five one facts per operation.
+  const mult=multiplicationDeck(family);
+  const multEasy=mult.filter(q=>/^(0 ×|1 ×|\d+ × [01] =)/.test(q.text));
+  const multHard=mult.filter(q=>!multEasy.includes(q));
+  return shuffleDeck([...shuffleDeck(multHard).slice(0,45),...shuffleDeck(multEasy).slice(0,5),...divisionDeck(family,50)]);
+}
 function selectFacts(family){
   selectedFamily=family;
   const mixed=typeof family==='string'&&family.startsWith('mixed');
   limit=mixed?600:120;
-  questions=gameMode==='multiplication'?multiplicationDeck(family):Array.from({length:mixed?100:20},makeQuestion);
+  questions=!mixed?familyDeck(family):gameMode==='multiplication'?multiplicationDeck(family):gameMode==='division'?divisionDeck(family):gameMode==='multdiv'?mixedBothDeck(family):Array.from({length:100},makeQuestion);
   startGame();
 }
 function factLabel(){if(typeof selectedFamily==='number')return symbols[gameMode]+' '+selectedFamily+' Facts';if(addSub())return selectedFamily==='mixed10'?'Mixed Facts Within 10':'Mixed Facts Within 20';return selectedFamily==='mixed10'?'Mixed Facts 1–10':'Mixed Facts 1–12';}
