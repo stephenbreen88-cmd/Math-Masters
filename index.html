@@ -267,7 +267,7 @@ body{display:block!important;padding:0!important;background:#071b37!important}
 <button data-mode="multiplication" onclick="selectMode('multiplication')">Multiplication ×</button><button data-mode="division" onclick="selectMode('division')">Division ÷</button><button data-mode="multdiv" onclick="selectMode('multdiv')">Both × ÷</button>
 </div><label for="studentName">Enter Your First Name</label><input id="studentName" maxlength="30" autocomplete="given-name" placeholder="First name"><button class="continue" onclick="continueToFacts()">Continue</button><p id="homeError" class="error" role="alert"></p><p class="motto">I Can Do Hard Things!</p>
 </section>
-<section id="factSelection" class="screen"><h1 id="factTitle">Choose Your Facts</h1><div id="factButtons" class="fact-buttons"></div><p class="fact-hint">Individual fact family: 20 questions in 1 minute.</p><h2>Mixed Facts</h2><div id="mixedButtons" class="mixed-buttons"></div><p class="fact-hint">Mixed facts: 100 questions in 5 minutes.</p><button class="secondary back" onclick="showScreen('home')">Back</button></section>
+<section id="factSelection" class="screen"><h1 id="factTitle">Choose Your Facts</h1><div id="factButtons" class="fact-buttons"></div><p class="fact-hint">Individual fact family: 20 questions in 2 minutes.</p><h2>Mixed Facts</h2><div id="mixedButtons" class="mixed-buttons"></div><p class="fact-hint">Mixed facts: 100 questions in 10 minutes.</p><button class="secondary back" onclick="showScreen('home')">Back</button></section>
 <section id="game" class="screen">
   <div class="game-info"><span id="gameTitle"></span><span id="progress"></span></div>
   <div class="game-center">
@@ -344,7 +344,7 @@ function multiplicationDeck(family){
 function selectFacts(family){
   selectedFamily=family;
   const mixed=typeof family==='string'&&family.startsWith('mixed');
-  limit=mixed?300:60;
+  limit=mixed?600:120;
   questions=gameMode==='multiplication'?multiplicationDeck(family):Array.from({length:mixed?100:20},makeQuestion);
   startGame();
 }
