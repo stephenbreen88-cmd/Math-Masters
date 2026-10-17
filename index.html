@@ -240,6 +240,14 @@ body{display:block!important;padding:0!important;background:#071b37!important}
  font-size:clamp(40px,6.5vw,65px)!important;text-align:center!important;
  padding:5px 7px!important;font-variant-numeric:tabular-nums!important;}
 @media(max-width:520px){#game #answer{width:145px!important;font-size:45px!important}}
+
+#game .number-pad{display:grid;grid-template-columns:repeat(3,74px);gap:7px;justify-content:center;margin:46px auto 0}
+#game .number-pad button{min-height:44px;padding:5px;font-size:23px;border-radius:9px;touch-action:manipulation}
+#game .number-pad .pad-clear{font-size:16px;background:#725076}
+#game .number-pad .pad-enter{font-size:16px;background:#167750}
+#game #answer{width:clamp(145px,19vw,176px)!important;max-width:176px!important;font-size:clamp(40px,6.5vw,65px)!important;text-align:center!important;padding:5px 7px!important}
+@media(max-height:740px){#game.active{gap:8px!important}#game .number-pad{gap:4px;margin-top:24px}#game .number-pad button{min-height:36px}#game .game-center{min-height:0!important}#game .game-info{margin-top:0!important}}
+@media(max-width:520px){#game .number-pad{grid-template-columns:repeat(3,65px)}#game .number-pad button{min-height:40px}#game #answer{width:145px!important;font-size:45px!important}}
 </style>
 </head>
 <body><main class="container">
@@ -257,6 +265,12 @@ body{display:block!important;padding:0!important;background:#071b37!important}
     <form id="answerForm" autocomplete="off">
       <div id="question" class="question"><input id="answer" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" aria-label="Your answer" placeholder="?" /></div>
     </form>
+<div id="numberPad" class="number-pad" aria-label="On-screen number keypad">
+<button type="button" data-digit="7">7</button><button type="button" data-digit="8">8</button><button type="button" data-digit="9">9</button>
+<button type="button" data-digit="4">4</button><button type="button" data-digit="5">5</button><button type="button" data-digit="6">6</button>
+<button type="button" data-digit="1">1</button><button type="button" data-digit="2">2</button><button type="button" data-digit="3">3</button>
+<button type="button" class="pad-clear" id="padClear">Clear</button><button type="button" data-digit="0">0</button><button type="button" class="pad-enter" id="padEnter">Enter</button>
+</div>
   </div>
   <div class="timer-box">
     <div class="time-track" role="progressbar" aria-label="Time remaining" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><div id="timeBar" class="time-bar"></div></div>
@@ -350,6 +364,12 @@ function factLabel(){if(typeof selectedFamily==='number')return symbols[gameMode
 function startGame(){clearInterval(ticker);index=0;correct=0;incorrect=[];finished=false;start=Date.now();el('gameTitle').textContent=modes[gameMode]+' — '+factLabel();showScreen('game');showQuestion();updateTimer();ticker=setInterval(()=>{updateTimer();if(Date.now()-start>=limit*1000)finishGame('time');},100);}
 function showQuestion(){el('progress').textContent=`Question ${index+1} of ${questions.length}`;const box=el('answer');const q=el('question');const parts=questions[index].text.split('?');q.firstChild && q.firstChild.nodeType===3 ? q.firstChild.textContent=parts[0] : q.insertBefore(document.createTextNode(parts[0]),box);box.value='';box.placeholder='?';box.focus();}
 function updateTimer(){const remaining=Math.max(0,limit-(Date.now()-start)/1000),secs=Math.ceil(remaining),ratio=remaining/limit;el('timer').textContent=`Time: ${Math.floor(secs/60)}:${String(secs%60).padStart(2,'0')}`;el('timeBar').style.width=(ratio*100)+'%';el('timeBar').style.background=ratio>.5?'#2ebf71':ratio>.2?'#e8b83e':'#ec5353';el('timeBar').parentElement.setAttribute('aria-valuenow',String(Math.round(ratio*100)));}
+document.querySelectorAll('#numberPad [data-digit]').forEach(button=>{
+ button.addEventListener('click',()=>{if(finished)return;const box=el('answer');if(box.value.length<4)box.value+=button.dataset.digit;box.focus();});
+});
+el('padClear').addEventListener('click',()=>{if(finished)return;el('answer').value='';el('answer').focus();});
+el('padEnter').addEventListener('click',()=>submitMathAnswer());
+
 el('answer').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();submitMathAnswer();}});
 el('answerForm').addEventListener('submit',e=>{e.preventDefault();submitMathAnswer();});
 function submitMathAnswer(){if(finished)return;if(Date.now()-start>=limit*1000){finishGame('time');return;}const raw=el('answer').value.trim();if(!/^\d+$/.test(raw))return;const submitted=Number(raw),q=questions[index];if(submitted===q.answer)correct++;else incorrect.push({text:q.text,submitted,answer:q.answer});index++;if(index===questions.length)finishGame('complete');else showQuestion();}
